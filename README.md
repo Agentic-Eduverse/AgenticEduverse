@@ -1,80 +1,80 @@
 # Agentic EduVerse
 
-一个面向教师、学生与家长的本地优先（local-first）智能课堂平台。项目把班级管理、实时课堂、音视频、白板、教材、测验、课堂录制、AI 学伴、翻译、家长报告和多语言界面放在同一个 pnpm monorepo 中。
+A local-first intelligent classroom platform for teachers, students, and parents. The project brings class management, live lessons, audio and video, a shared whiteboard, learning materials, quizzes, class recording, AI tutors, translation, parent reports, and a multilingual interface together in a single pnpm monorepo.
 
-> 当前仓库首先面向本地开发、演示和原型验证。生产部署前必须替换所有开发密钥、使用 HTTPS、启用真实 Redis/数据库，并完成安全与容量评估。
-
----
-
-## 目录
-
-- [核心能力](#核心能力)
-- [系统架构](#系统架构)
-- [技术栈](#技术栈)
-- [仓库结构](#仓库结构)
-- [快速开始](#快速开始)
-- [环境变量](#环境变量)
-- [数据库](#数据库)
-- [AI 学伴与 ZenMux](#ai-学伴与-zenmux)
-- [音视频与录制](#音视频与录制)
-- [实时课堂](#实时课堂)
-- [权限与角色](#权限与角色)
-- [多语言](#多语言)
-- [测试与质量检查](#测试与质量检查)
-- [部署建议](#部署建议)
-- [安全注意事项](#安全注意事项)
-- [常见问题](#常见问题)
-- [Git 工作流](#git-工作流)
-- [项目边界](#项目边界)
+> This repository currently targets local development, demonstrations, and prototype validation. Before deploying to production, replace all development secrets, use HTTPS, enable production-grade Redis and database services, and complete security and capacity assessments.
 
 ---
 
-## 核心能力
+## Table of Contents
 
-### 教师端
-
-- 创建和管理班级，生成 6 位房间码，可设置加入密码。
-- 开启/结束课堂，查看参与者、情绪反馈、举手和课堂聊天。
-- 实时音视频、摄像头、麦克风和屏幕共享。
-- 共享白板：笔画、清空、撤销和跨客户端同步。
-- 上传课堂教材，学生端通过 Socket 通知立即刷新，也有轮询兜底。
-- 创建手工测验或通过 AI 从教材生成测验。
-- 课堂热力图、个别辅导队列和角色扮演活动。
-- 浏览器端合成录制，上传到本地磁盘，支持回放和 Range 请求。
-- 生成家长邀请：24 小时有效、一次性使用、绑定指定邮箱。
-- 课前预习与课后课堂分析（配置服务端 AI 后启用）。
-
-### 学生端
-
-- 使用房间码和可选密码加入班级。
-- 查看自己的班级、学习统计、金币和课堂入口。
-- 课堂中观看/收听教师、参与聊天、白板、测验、情绪反馈和举手。
-- 五个独立 AI 学伴：通用、数学、语文、英语、编程。
-- 每个学伴独立保存会话历史，切换学伴不会串历史。
-- ZenMux 模型切换：仅展示四个产品选定模型的友好名称。
-- AI 回答流式显示；练习题、解析和相关视频在完整结果后补充。
-- 每次回答可展示最多 5 个知识点讲解视频，点击打开外部视频页面。
-- 内置翻译器：自动检测、双向互换、复制译文、近期翻译。
-- 虚拟人物/头像配置和金币激励。
-
-### 家长端
-
-- 通过教师邀请链接或邀请码绑定孩子。
-- 查看孩子的出勤、学习时长、情绪趋势、测验表现和金币。
-- 生成基于真实课堂数据的 AI 周报。
-- 绑定流程校验邀请邮箱，避免任意认领学生。
-
-### 平台级能力
-
-- 三角色单账号隔离：教师、学生、家长分别进入对应门户。
-- 8 种界面语言：中文、英文、德语、法语、意大利语、俄语、西班牙语、日语。
-- Cookie + localStorage 保存语言；服务端首屏按 Cookie 渲染，减少语言闪烁。
-- SQLite + Prisma 数据层，共 20 个业务模型。
-- Socket.IO 实时课堂和 LiveKit 音视频相互独立，通过 `classId` 关联。
+- [Core Features](#core-features)
+- [System Architecture](#system-architecture)
+- [Technology Stack](#technology-stack)
+- [Repository Structure](#repository-structure)
+- [Quick Start](#quick-start)
+- [Environment Variables](#environment-variables)
+- [Database](#database)
+- [AI Tutors and ZenMux](#ai-tutors-and-zenmux)
+- [Audio, Video, and Recording](#audio-video-and-recording)
+- [Real-Time Classroom](#real-time-classroom)
+- [Permissions and Roles](#permissions-and-roles)
+- [Internationalization](#internationalization)
+- [Testing and Quality Checks](#testing-and-quality-checks)
+- [Deployment Recommendations](#deployment-recommendations)
+- [Security Considerations](#security-considerations)
+- [Troubleshooting](#troubleshooting)
+- [Git Workflow](#git-workflow)
+- [Project Scope](#project-scope)
 
 ---
 
-## 系统架构
+## Core Features
+
+### Teacher Portal
+
+- Create and manage classes, generate six-character room codes, and optionally require a password to join.
+- Start and end lessons, and monitor participants, emotional feedback, raised hands, and classroom chat.
+- Use real-time audio and video, camera, microphone, and screen sharing.
+- Collaborate on a shared whiteboard with drawing, clearing, undo, and cross-client synchronization.
+- Upload class materials; student clients refresh immediately through Socket notifications, with polling as a fallback.
+- Create quizzes manually or generate them from learning materials with AI.
+- Use classroom heat maps, one-to-one tutoring queues, and role-play activities.
+- Record a composite lesson in the browser, upload it to local storage, and play it back with HTTP Range support.
+- Generate parent invitations that expire after 24 hours, can be used only once, and are tied to a specific email address.
+- Access pre-class preparation and post-class analytics when server-side AI is configured.
+
+### Student Portal
+
+- Join a class with a room code and optional password.
+- View enrolled classes, learning statistics, coins, and classroom entry points.
+- Watch and listen to the teacher, participate in chat and whiteboard activities, answer quizzes, share emotional feedback, and raise a hand.
+- Use five independent AI tutors: General, Mathematics, Chinese, English, and Programming.
+- Keep separate conversation histories for every tutor, preventing conversations from leaking across subjects.
+- Switch between ZenMux models using friendly names for four product-approved models.
+- Receive streamed AI responses, followed by practice questions, explanations, and related videos after the complete result is validated.
+- View up to five concept-explanation videos for each answer and open them on an external video page.
+- Use a built-in translator with automatic language detection, bidirectional swapping, copy-to-clipboard, and recent translations.
+- Configure a virtual character or avatar and earn coins through participation.
+
+### Parent Portal
+
+- Link a child through a teacher-issued invitation URL or invitation code.
+- Review attendance, study time, emotional trends, quiz performance, and coins.
+- Generate AI-powered weekly reports from real classroom data.
+- Validate the invited email address during linking to prevent unauthorized claims of student accounts.
+
+### Platform Capabilities
+
+- Enforce single-role account isolation: teachers, students, and parents enter separate portals.
+- Support eight interface languages: Chinese, English, German, French, Italian, Russian, Spanish, and Japanese.
+- Persist language selection in both cookies and localStorage; server-render the initial page from the cookie to reduce language flicker.
+- Use a SQLite and Prisma data layer with 20 business models.
+- Keep Socket.IO classroom events and LiveKit media independent while linking both systems through `classId`.
+
+---
+
+## System Architecture
 
 ```text
 Browser
@@ -106,75 +106,75 @@ Shared workspace packages
   packages/ai      server-side AI calls, schemas and memory
 ```
 
-### 两套“房间”
+### Two Types of Rooms
 
-| 系统 | 命名 | 用途 |
+| System | Naming Convention | Purpose |
 |---|---|---|
-| Socket.IO | `class:<classId>` | 聊天、白板、测验、情绪、在线状态等数据事件 |
-| LiveKit | `class-<classId>` | 音视频和屏幕共享 |
+| Socket.IO | `class:<classId>` | Data events for chat, whiteboard, quizzes, emotions, online status, and more |
+| LiveKit | `class-<classId>` | Audio, video, and screen sharing |
 
-二者是独立连接。Socket 断开不一定中断媒体，媒体断开也不必然中断白板和聊天。
+These are independent connections. A Socket disconnection does not necessarily interrupt media, and a media disconnection does not necessarily interrupt the whiteboard or chat.
 
 ---
 
-## 技术栈
+## Technology Stack
 
-| 层 | 技术 |
+| Layer | Technology |
 |---|---|
-| Web | Next.js 14.2、React 18、TypeScript、Tailwind CSS |
-| 认证 | Auth.js / NextAuth 5 beta、Credentials 登录、bcrypt |
-| 实时课堂 | Express、Socket.IO、一次性 HMAC 票据 |
-| 音视频 | LiveKit client + server SDK、本地 LiveKit Server |
-| 数据库 | SQLite、Prisma 6.19 |
-| AI | ZenMux OpenAI-compatible API、WorkBuddy Cloud SDK、Zod |
-| 动画/视觉 | Framer Motion、PixiJS、Recharts、Lucide |
-| 包管理 | pnpm workspace 9.15.9 |
+| Web | Next.js 14.2, React 18, TypeScript, Tailwind CSS |
+| Authentication | Auth.js / NextAuth 5 beta, Credentials login, bcrypt |
+| Real-time classroom | Express, Socket.IO, single-use HMAC tickets |
+| Audio and video | LiveKit client and server SDKs, local LiveKit Server |
+| Database | SQLite, Prisma 6.19 |
+| AI | ZenMux OpenAI-compatible API, WorkBuddy Cloud SDK, Zod |
+| Animation and visuals | Framer Motion, PixiJS, Recharts, Lucide |
+| Package management | pnpm workspace 9.15.9 |
 
 ---
 
-## 仓库结构
+## Repository Structure
 
 ```text
 E:/apps
 ├─ apps/
-│  ├─ web/                 Next.js 页面和 API 路由
-│  │  ├─ src/app/          App Router 页面与 API
-│  │  ├─ src/components/   页面与业务组件
-│  │  ├─ src/lib/          API 客户端、AI、录制、i18n 等
-│  │  ├─ scripts/          浏览器测试、ZenMux 配置工具
+│  ├─ web/                 Next.js pages and API routes
+│  │  ├─ src/app/          App Router pages and APIs
+│  │  ├─ src/components/   Page and business components
+│  │  ├─ src/lib/          API client, AI, recording, i18n, and more
+│  │  ├─ scripts/          Browser tests and ZenMux configuration utility
 │  │  └─ .env.example
-│  ├─ server/              Express + Socket.IO 实时后端
+│  ├─ server/              Express + Socket.IO real-time backend
 │  │  ├─ src/index.ts
 │  │  ├─ src/socket-handlers.ts
 │  │  └─ .env.example
-│  ├─ infra/media/         LiveKit / Docker 媒体栈配置
-│  └─ database/migrations/ 手工 SQLite SQL 迁移
+│  ├─ infra/media/         LiveKit / Docker media stack configuration
+│  └─ database/migrations/ Manual SQLite SQL migrations
 ├─ packages/
-│  ├─ ai/                  AI 调用、SSE 解析、Zod 输出校验
-│  ├─ db/                  Prisma Client 与 schema
-│  └─ shared/              前后端共享类型及 Socket 事件
-├─ data/                   本地数据库、教材和录像（被 Git 忽略）
-├─ docs/                   功能清单和路演材料
+│  ├─ ai/                  AI calls, SSE parsing, and Zod output validation
+│  ├─ db/                  Prisma Client and schema
+│  └─ shared/              Types and Socket events shared by client and server
+├─ data/                   Local database, materials, and recordings (Git-ignored)
+├─ docs/                   Feature inventory and roadshow materials
 ├─ pnpm-workspace.yaml
-├─ start-dev.bat           Windows 本地三服务启动器
+├─ start-dev.bat           Windows launcher for the three local services
 └─ README.md
 ```
 
-依赖方向建议保持：`apps/* -> packages/*`，共享包不要反向依赖具体应用。
+Keep dependencies flowing in this direction: `apps/* -> packages/*`. Shared packages should not depend on specific applications.
 
 ---
 
-## 快速开始
+## Quick Start
 
-### 前置要求
+### Prerequisites
 
-- Windows 10/11（当前本地媒体启动器针对 Windows）。
-- Node.js 20+（当前验证使用 Node 22）。
-- pnpm 9.15.9。
-- 可选：本地 LiveKit Windows 二进制。
-- Docker 仅用于完整 LiveKit + Egress + MinIO + Caddy 栈，基础本地模式不需要 Docker。
+- Windows 10/11. The current local media launcher targets Windows.
+- Node.js 20 or later. Node.js 22 is currently validated.
+- pnpm 9.15.9.
+- Optional: a local LiveKit Windows binary.
+- Docker is required only for the complete LiveKit + Egress + MinIO + Caddy stack. The basic local setup does not require Docker.
 
-### 1. 安装依赖
+### 1. Install Dependencies
 
 ```powershell
 cd E:\apps
@@ -183,62 +183,62 @@ corepack prepare pnpm@9.15.9 --activate
 pnpm install
 ```
 
-如果官方 npm registry 在当前网络不可达，可临时指定镜像：
+If the official npm registry is unavailable on your network, temporarily use a mirror:
 
 ```powershell
 pnpm install --registry=https://registry.npmmirror.com
 ```
 
-不要混用 npm 与 pnpm。本仓库只维护 `pnpm-lock.yaml`，`package-lock.json` 已被忽略。
+Do not mix npm and pnpm. This repository maintains only `pnpm-lock.yaml`; `package-lock.json` is ignored.
 
-### 2. 创建本地环境文件
+### 2. Create Local Environment Files
 
 ```powershell
 Copy-Item apps\web\.env.example apps\web\.env
 Copy-Item apps\server\.env.example apps\server\.env
 ```
 
-至少修改：
+At minimum, update:
 
-- SQLite 绝对路径。
-- `NEXTAUTH_SECRET`。
-- Web/Socket 相同的 `SOCKET_TICKET_SECRET`。
-- LiveKit 地址、Key、Secret（需要音视频时）。
-- ZenMux Key（需要第三方 AI 时）。
+- The absolute SQLite path.
+- `NEXTAUTH_SECRET`.
+- The same `SOCKET_TICKET_SECRET` in both Web and Socket services.
+- The LiveKit URL, key, and secret when audio and video are required.
+- The ZenMux key when third-party AI is required.
 
-### 3. 生成 Prisma Client
+### 3. Generate Prisma Client
 
 ```powershell
 $env:DATABASE_URL = "file:E:/apps/data/eduverse.db"
 pnpm db:generate
 ```
 
-从 Linux 复制到 Windows 的项目必须重新生成 Prisma Client，否则 Prisma 原生引擎平台不匹配。
+If the project was copied from Linux to Windows, regenerate Prisma Client. Otherwise, the native Prisma engine will target the wrong platform.
 
-### 4. 启动
+### 4. Start the Services
 
-Windows 推荐：
+Recommended on Windows:
 
 ```powershell
 E:\apps\start-dev.bat
 ```
 
-会分别启动：
+This starts:
 
-- Web：`http://localhost:3000`
-- Socket.IO：`http://localhost:4000/health`
-- LiveKit：`ws://localhost:7880`（本地二进制存在时）
+- Web: `http://localhost:3000`
+- Socket.IO: `http://localhost:4000/health`
+- LiveKit: `ws://localhost:7880` when the local binary is available
 
-也可分别启动：
+You can also start the application services separately:
 
 ```powershell
 pnpm dev:web
 pnpm dev:server
 ```
 
-若 pnpm 包装脚本或 PATH 不可用，可直接从应用目录运行实际入口。
+If the pnpm wrapper or `PATH` is unavailable, run the actual entry point directly from the relevant application directory.
 
-### 5. 健康检查
+### 5. Health Checks
 
 ```powershell
 Invoke-WebRequest http://localhost:3000/login
@@ -246,7 +246,7 @@ Invoke-WebRequest http://localhost:4000/health
 Invoke-WebRequest http://localhost:7880/
 ```
 
-Socket 健康响应应为：
+The Socket health endpoint should return:
 
 ```json
 {"status":"ok"}
@@ -254,70 +254,70 @@ Socket 健康响应应为：
 
 ---
 
-## 环境变量
+## Environment Variables
 
-### Web：`apps/web/.env`
+### Web: `apps/web/.env`
 
-| 变量 | 必需 | 说明 |
+| Variable | Required | Description |
 |---|---:|---|
-| `DATABASE_URL` | 是 | Prisma SQLite URL，例如 `file:E:/apps/data/eduverse.db` |
-| `NEXTAUTH_SECRET` | 是 | Auth.js 签名密钥，至少 32 个随机字符 |
-| `NEXTAUTH_URL` | 是 | 本地为 `http://localhost:3000` |
-| `NEXT_PUBLIC_SOCKET_URL` | 是 | Socket 服务地址，本地为 `http://localhost:4000` |
-| `SOCKET_TICKET_SECRET` | 是 | 一次性 Socket 票据密钥，必须与 server 一致 |
-| `ZENMUX_API_KEY` | 学伴使用时 | ZenMux 私密 Key，只能存在服务端环境变量中 |
-| `ZENMUX_MODEL` | 否 | 学伴默认模型，当前推荐 `openai/gpt-5.6-luna` |
-| `AI_BASE_URL` | 其他服务端 AI 时 | OpenAI-compatible base URL，通常包含 `/v1` |
-| `AI_MODEL` | 同上 | 通用服务端 AI 模型 ID |
-| `AI_API_KEY` | 同上 | 通用服务端 AI Key |
-| `LIVEKIT_URL` | 音视频时 | 服务端访问 LiveKit 的 HTTP/HTTPS 地址 |
-| `NEXT_PUBLIC_LIVEKIT_URL` | 音视频时 | 浏览器访问的 `ws://`/`wss://` 地址 |
-| `LIVEKIT_API_KEY` | 音视频时 | LiveKit API Key |
-| `LIVEKIT_API_SECRET` | 音视频时 | LiveKit API Secret |
-| `UPLOAD_ROOT` | 推荐 | 教材及浏览器录制上传的磁盘根目录 |
+| `DATABASE_URL` | Yes | Prisma SQLite URL, for example `file:E:/apps/data/eduverse.db` |
+| `NEXTAUTH_SECRET` | Yes | Auth.js signing secret with at least 32 random characters |
+| `NEXTAUTH_URL` | Yes | `http://localhost:3000` for local development |
+| `NEXT_PUBLIC_SOCKET_URL` | Yes | Socket service URL; `http://localhost:4000` locally |
+| `SOCKET_TICKET_SECRET` | Yes | Secret for single-use Socket tickets; must match the server value |
+| `ZENMUX_API_KEY` | When using AI tutors | Private ZenMux key; it must exist only in server-side environment variables |
+| `ZENMUX_MODEL` | No | Default tutor model; currently recommended: `openai/gpt-5.6-luna` |
+| `AI_BASE_URL` | For other server-side AI | OpenAI-compatible base URL, normally including `/v1` |
+| `AI_MODEL` | Same as above | General server-side AI model ID |
+| `AI_API_KEY` | Same as above | General server-side AI key |
+| `LIVEKIT_URL` | For audio and video | HTTP/HTTPS address used by the server to access LiveKit |
+| `NEXT_PUBLIC_LIVEKIT_URL` | For audio and video | `ws://` or `wss://` address used by browsers to access LiveKit |
+| `LIVEKIT_API_KEY` | For audio and video | LiveKit API key |
+| `LIVEKIT_API_SECRET` | For audio and video | LiveKit API secret |
+| `UPLOAD_ROOT` | Recommended | Root directory for uploaded materials and browser recordings |
 
-`NEXT_PUBLIC_*` 会进入浏览器包，绝不能给 Secret 或第三方 API Key 加这个前缀。
+Variables prefixed with `NEXT_PUBLIC_*` are included in the browser bundle. Never use that prefix for a secret or third-party API key.
 
-### Socket server：`apps/server/.env`
+### Socket Server: `apps/server/.env`
 
-| 变量 | 必需 | 说明 |
+| Variable | Required | Description |
 |---|---:|---|
-| `DATABASE_URL` | 是 | 应与 Web 指向同一数据库 |
-| `REDIS_URL` | 是 | 单机开发可用 `memory://`；生产使用真实 Redis |
-| `SOCKET_TICKET_SECRET` | 是 | 必须与 Web 完全一致 |
-| `WEB_ORIGINS` | 是 | 允许的 Web Origin，可按实现配置多个 |
+| `DATABASE_URL` | Yes | Must point to the same database as the Web service |
+| `REDIS_URL` | Yes | Use `memory://` for single-machine development and real Redis in production |
+| `SOCKET_TICKET_SECRET` | Yes | Must exactly match the Web service value |
+| `WEB_ORIGINS` | Yes | Allowed Web origins; multiple origins may be configured as supported by the implementation |
 
-### 生成安全随机值
+### Generate a Secure Random Value
 
-PowerShell 示例：
+PowerShell example:
 
 ```powershell
 [Convert]::ToHexString([Security.Cryptography.RandomNumberGenerator]::GetBytes(32)).ToLower()
 ```
 
-不要将 `.env`、数据库、LiveKit 本机配置或任何 API Key 提交到 Git。
+Never commit `.env` files, databases, local LiveKit configuration, or API keys to Git.
 
 ---
 
-## 数据库
+## Database
 
-### 默认数据库
+### Default Database
 
-开发模式使用 SQLite：
+Development mode uses SQLite:
 
 ```text
 data/eduverse.db
 ```
 
-该目录完全被 Git 忽略，因为里面包含真实账号、密码哈希、课堂记录、邀请、历史聊天和上传路径。
+The entire directory is ignored by Git because it may contain real accounts, password hashes, class records, invitations, chat histories, and upload paths.
 
-### Prisma schema
+### Prisma Schema
 
 ```text
 packages/db/prisma/schema.prisma
 ```
 
-当前业务模型包括：
+Current business models include:
 
 - `User`, `Class`, `Enrollment`, `Session`
 - `EmotionLog`, `Message`, `Attendance`, `RewardLedger`
@@ -328,9 +328,9 @@ packages/db/prisma/schema.prisma
 - `Recording`, `TutoringSession`
 - `ParentInvitation`, `ParentStudentLink`
 
-### Schema 同步
+### Schema Synchronization
 
-开发环境可使用：
+For development, run:
 
 ```powershell
 $env:DATABASE_URL = "file:E:/apps/data/eduverse.db"
@@ -338,17 +338,17 @@ pnpm exec prisma db push --schema packages/db/prisma/schema.prisma
 pnpm db:generate
 ```
 
-`db push` 适合原型开发，不建议替代生产迁移流程。
+`db push` is suitable for prototype development but should not replace a production migration workflow.
 
-### 手工 SQL 迁移
+### Manual SQL Migrations
 
-`apps/database/migrations` 中的 SQL **不是幂等的**，必须按文件名顺序且每个文件只执行一次。执行前备份数据库，并建立迁移记录。回滚策略主要是恢复备份，而不是删除新增列。
+The SQL files in `apps/database/migrations` are **not idempotent**. Run them in filename order and execute each file only once. Back up the database before applying a migration and maintain a migration record. Rollback should primarily restore a backup rather than attempt to remove newly added columns.
 
 ---
 
-## AI 学伴与 ZenMux
+## AI Tutors and ZenMux
 
-### 调用链路
+### Request Flow
 
 ```text
 Student browser
@@ -360,217 +360,217 @@ Student browser
   -> browser incrementally updates answer
 ```
 
-### 流式输出
+### Streaming Responses
 
-- 模型按 JSON 输出，要求 `answer` 字段位于前部。
-- 服务端从 SSE 增量累积 JSON，并只提取 `answer` 的可见部分。
-- 浏览器收到 NDJSON `answer` 事件后实时更新聊天气泡。
-- 完整 JSON 校验成功后，才补上练习题、答案解析和视频关键词。
-- 完成后保存到当前学伴自己的历史桶。
-- 超时、网络断开、非正常 `finish_reason` 或缺少 `[DONE]` 会标记为中断。
-- 中断时可保留部分正文，但不保存，也不作为下轮上下文。
+- The model returns JSON with the `answer` field positioned near the beginning.
+- The server incrementally accumulates JSON from SSE and extracts only the visible portion of `answer`.
+- The browser updates the chat bubble whenever it receives an NDJSON `answer` event.
+- Practice questions, answer explanations, and video keywords are added only after the complete JSON passes validation.
+- The completed result is saved to the current tutor's own history bucket.
+- Timeouts, network interruptions, an abnormal `finish_reason`, or a missing `[DONE]` marker cause the response to be marked as interrupted.
+- Partial response text may remain visible after an interruption, but it is not saved or included in the next request's context.
 
-### 模型选择
+### Model Selection
 
-网页只展示产品选定的四个模型：
+The interface displays only four product-approved models:
 
-| UI 名称 | ZenMux model ID |
+| UI Name | ZenMux Model ID |
 |---|---|
 | DeepSeek V4.1 Flash | `deepseek/deepseek-v4.1-flash` |
 | Gemini 3.8 Flash | `google/gemini-3.8-flash` |
 | GPT 5.6 Luna | `openai/gpt-5.6-luna` |
 | GPT 5.6 Terra | `openai/gpt-5.6-terra` |
 
-选项保存在当前浏览器的 localStorage，但服务端会再次校验，只允许上述四项。模型出现在目录中不代表账户一定有权限，也不代表上游线路始终可用。
+The selected option is stored in the current browser's localStorage. The server validates the value again and accepts only the four models above. A model appearing in the catalog does not guarantee that the account has permission to use it or that its upstream route is always available.
 
-### 一键持久填写 ZenMux Key
+### Persist a ZenMux Key Securely
 
-不要在聊天、Issue、截图或命令参数中粘贴 Key。使用交互式脚本：
+Do not paste a key into chat, issues, screenshots, or command arguments. Use the interactive script:
 
 ```powershell
 & "C:\Users\ThinkBook\.workbuddy\binaries\node\versions\22.22.2-3\node.exe" `
   "E:\apps\apps\web\scripts\configure-zenmux.cjs"
 ```
 
-脚本会：
+The script:
 
-- 隐藏 Key 输入。
-- 原子更新 `apps/web/.env`。
-- 保留其他环境变量。
-- 不回显 Key，也不生成额外密钥备份。
+- Hides key input.
+- Atomically updates `apps/web/.env`.
+- Preserves all other environment variables.
+- Does not print the key or create an additional secret backup.
 
-修改 Key 后重启 Web 服务。
+Restart the Web service after changing the key.
 
-### 相关视频
+### Related Videos
 
-完整回答包含 1–3 个短知识点词。Web 服务通过 B 站公开搜索页查找真实视频，解析标题、BV 号、封面、时长和作者，并最多展示 5 条。该能力依赖外部网页结构，平台改版可能导致解析失效；当前过滤不是人工审核，不应宣称所有视频均已教育安全审核。
+A complete AI response includes one to three short concept keywords. The Web service searches Bilibili's public search page for real videos, parses the title, BV identifier, thumbnail, duration, and author, and displays up to five results. This feature depends on an external page structure and may stop working when that platform changes. The current filtering is not a substitute for human review, so do not claim that every result has passed an educational safety review.
 
-### 翻译器
+### Translator
 
-翻译器使用独立的 WorkBuddy Cloud 浏览器通道，不会自动跟随 ZenMux 学伴模型切换。其历史目前只保留在页面内，不写入 `AgentMemory`。
+The translator uses a separate WorkBuddy Cloud browser channel and does not automatically follow ZenMux tutor model changes. Its history currently remains in page memory and is not written to `AgentMemory`.
 
 ---
 
-## 音视频与录制
+## Audio, Video, and Recording
 
-### 本地 LiveKit
+### Local LiveKit
 
-基础本地模式使用 Windows 原生 LiveKit Server：
+The basic local setup uses the native Windows LiveKit Server:
 
 ```text
 apps/infra/media/bin/livekit-server.exe
 apps/infra/media/livekit.local.yaml
 ```
 
-这两个文件被 Git 忽略：二进制体积大，本地 YAML 含密钥。
+Both files are ignored by Git: the binary is large, and the local YAML contains secrets.
 
-### 浏览器安全上下文
+### Browser Secure Context
 
-开发时必须使用：
+During development, use:
 
 ```text
 http://localhost:3000
 ```
 
-不要使用 `http://192.168.x.x:3000` 等局域网 HTTP 地址。浏览器只在 HTTPS 或 localhost 下开放 `getUserMedia`。若要让其他设备使用摄像头和麦克风，必须部署 HTTPS，并使用 `wss://` LiveKit。
+Do not use a LAN HTTP address such as `http://192.168.x.x:3000`. Browsers expose `getUserMedia` only over HTTPS or on localhost. To use camera and microphone from another device, deploy over HTTPS and use LiveKit through `wss://`.
 
-Web 响应头应允许本站设备权限：
+The Web response headers should allow device access for the same origin:
 
 ```text
 Permissions-Policy: camera=(self), microphone=(self), geolocation=()
 ```
 
-### 当前发布权限
+### Current Publishing Permissions
 
-- 教师：可以发布摄像头、麦克风和屏幕共享。
-- 普通学生：只订阅，不能发布摄像头和麦克风。
-- 私密辅导：按 token 权限允许参与者发布。
+- Teachers can publish camera, microphone, and screen-share tracks.
+- Regular students are subscribe-only and cannot publish camera or microphone tracks.
+- Private tutoring participants may publish according to their token permissions.
 
-### 浏览器端录制
+### Browser-Side Recording
 
-当前本地方案不依赖 LiveKit Egress：
+The current local solution does not depend on LiveKit Egress:
 
-1. 教师浏览器把参与者视频绘制到 Canvas。
-2. `MediaRecorder` 录制 WebM。
-3. 停止后上传到 `UPLOAD_ROOT/recordings/...`。
-4. 数据库记录转为 `COMPLETE`。
-5. 回放路由支持 HTTP Range，播放器可拖动。
+1. The teacher's browser draws participant video onto a Canvas.
+2. `MediaRecorder` records a WebM file.
+3. The file is uploaded to `UPLOAD_ROOT/recordings/...` when recording stops.
+4. The database record changes to `COMPLETE`.
+5. The playback route supports HTTP Range requests, allowing the player to seek.
 
-录制器使用模块级注册表，可跨组件重挂载存活；每 20 秒更新数据库心跳，长时间无心跳的 `ACTIVE` 行会被回收。站内离开课堂会尝试自动保存。整页崩溃、系统断电仍可能造成损失，因此生产环境建议部署服务端 Egress。
+The recorder uses a module-level registry so that it can survive component remounts. It updates a database heartbeat every 20 seconds, and stale `ACTIVE` records without a heartbeat are reclaimed. Navigating away from the classroom within the application attempts to save the recording automatically. A full-page crash or system power loss can still cause data loss, so production deployments should use server-side Egress.
 
-### 完整 Docker 媒体栈
+### Complete Docker Media Stack
 
-`apps/infra/media/docker-compose.yml` 包括 Redis、LiveKit、Egress、MinIO 和 Caddy。参见 `apps/infra/media/README.md`。仓库里的共享 YAML 只能包含开发占位值；生产必须全部替换。
-
----
-
-## 实时课堂
-
-### Socket 认证
-
-1. Web 使用登录会话请求 `/api/socket-ticket`。
-2. 服务端签发短期 HMAC 票据。
-3. Socket server 验证签名、过期时间和一次性 `jti`。
-4. 加入课堂时再次查询数据库：教师必须拥有班级，学生必须已入班。
-
-生产必须使用真实 Redis，才能在多实例之间共享票据防重放、在线状态和课堂状态。`memory://` 只适合单进程开发。
-
-### 主要实时事件
-
-- 课堂加入/离开和参与者列表。
-- 课堂消息和聊天历史。
-- 情绪反馈、举手和教师公告。
-- 白板状态与操作。
-- 测验开始、答题、结果、结束。
-- 角色扮演和个别辅导。
-- 教材列表变化通知。
-- 课堂结束。
-
-事件类型统一定义在 `packages/shared/src/index.ts`，修改事件时应同时更新服务器和客户端。
+`apps/infra/media/docker-compose.yml` includes Redis, LiveKit, Egress, MinIO, and Caddy. See `apps/infra/media/README.md`. Shared YAML files in the repository may contain development placeholders only; replace every placeholder in production.
 
 ---
 
-## 权限与角色
+## Real-Time Classroom
 
-### 用户角色
+### Socket Authentication
+
+1. The Web application uses the authenticated session to request `/api/socket-ticket`.
+2. The server issues a short-lived HMAC ticket.
+3. The Socket server validates the signature, expiration time, and single-use `jti`.
+4. When a user joins a classroom, the server checks the database again: the teacher must own the class, and the student must be enrolled.
+
+Production deployments must use real Redis so that multiple instances can share ticket replay protection, presence, and classroom state. `memory://` is suitable only for single-process development.
+
+### Main Real-Time Events
+
+- Classroom join and leave events and participant lists.
+- Classroom messages and chat history.
+- Emotional feedback, raised hands, and teacher announcements.
+- Whiteboard state and operations.
+- Quiz start, answers, results, and completion.
+- Role-play and one-to-one tutoring.
+- Notifications when the class material list changes.
+- Classroom completion.
+
+Event types are defined centrally in `packages/shared/src/index.ts`. When changing an event, update both the server and client.
+
+---
+
+## Permissions and Roles
+
+### User Roles
 
 - `TEACHER`
 - `STUDENT`
 - `PARENT`
 
-一个账号只有一个角色。入口选择不会改变已有账号的角色；角色与入口不一致时，会引导退出并使用正确账号，而不是静默跳回学生端。
+Each account has exactly one role. Selecting a portal does not change an existing account's role. If the account role and selected portal do not match, the user is prompted to sign out and use the correct account instead of being silently redirected to the student portal.
 
-### 主要资源权限
+### Main Resource Permissions
 
-| 资源 | 教师 | 学生 | 家长 |
+| Resource | Teacher | Student | Parent |
 |---|---|---|---|
-| 班级管理 | 仅自己创建的班级 | 通过房间码加入 | 无 |
-| 实时课堂数据 | 自己的班级 | 已入班且课堂开启 | 无 |
-| 音视频 | 自己的班级 | 已入班；默认只订阅 | 无 |
-| 教材 | 上传/下载自己的班级 | 已入班可下载 | 无 |
-| 录像 | 管理/发布自己的班级 | 按发布策略查看 | 无 |
-| 学伴 | 无 | 自己使用 | 无 |
-| 学习报告 | 为班级学生生成相关数据 | 无 | 仅已绑定孩子 |
+| Class management | Classes created by the teacher | Join with a room code | None |
+| Real-time classroom data | Classes owned by the teacher | Enrolled and class is live | None |
+| Audio and video | Classes owned by the teacher | Enrolled; subscribe-only by default | None |
+| Learning materials | Upload and download in owned classes | Download when enrolled | None |
+| Recordings | Manage and publish for owned classes | View according to publishing policy | None |
+| AI tutors | None | Personal use | None |
+| Learning reports | Generate relevant data for class students | None | Linked children only |
 
 ---
 
-## 多语言
+## Internationalization
 
-界面语言定义于：
+Interface locale files are located in:
 
 ```text
 apps/web/src/lib/i18n/locales/
 ```
 
-`zh.ts` 是键结构真源；其他语言通过 TypeScript 类型保证键完整。新增文案时：
+`zh.ts` is the source of truth for the dictionary key structure. TypeScript types enforce key completeness in every other locale. When adding interface text:
 
-1. 在中文字典添加键。
-2. 在全部七个其他字典添加对应翻译。
-3. 在组件中使用 `useI18n().t('path.key')`。
-4. 运行 TypeScript 检查。
+1. Add the key to the Chinese dictionary.
+2. Add the corresponding translation to all seven other dictionaries.
+3. Use `useI18n().t('path.key')` in the component.
+4. Run the TypeScript checks.
 
-目前主路径已国际化，部分课堂深层组件和 API 错误文案仍可能含中文，新增功能应继续消除硬编码文案。
+The main application paths are internationalized. Some deeply nested classroom components and API error messages may still contain Chinese text. New features should continue replacing hard-coded interface strings with locale keys.
 
 ---
 
-## 测试与质量检查
+## Testing and Quality Checks
 
-### 类型检查
+### Type Checking
 
 ```powershell
 pnpm typecheck
 ```
 
-若根脚本因为环境 PATH 找不到 `pnpm`，可直接运行前端 TypeScript：
+If the root script cannot find `pnpm` because of the environment `PATH`, run the frontend TypeScript compiler directly:
 
 ```powershell
 & "C:\path\to\node.exe" "E:\apps\apps\web\node_modules\typescript\bin\tsc" `
   --noEmit -p "E:\apps\apps\web\tsconfig.json"
 ```
 
-### 后端测试
+### Backend Tests
 
 ```powershell
 pnpm --filter server test
 ```
 
-### 构建
+### Build
 
 ```powershell
 pnpm --filter web build
 pnpm --filter server build
 ```
 
-### 浏览器/E2E 脚本
+### Browser and E2E Scripts
 
 ```text
 apps/web/scripts/browser-smoke.mjs
 apps/web/scripts/quiz-four-types-e2e.mjs
 ```
 
-这些脚本可能需要本地服务、测试账号和浏览器 CDP，不应直接在生产数据库运行。
+These scripts may require local services, test accounts, and browser CDP access. Do not run them directly against a production database.
 
-### 提交前建议
+### Recommended Pre-Commit Checks
 
 ```powershell
 git diff --check
@@ -579,125 +579,125 @@ git diff --cached
 pnpm typecheck
 ```
 
-绝不能在命令输出、测试报告或截图中打印真实 API Key。
+Never print real API keys in command output, test reports, or screenshots.
 
 ---
 
-## 部署建议
+## Deployment Recommendations
 
-### 不拆仓库，拆服务部署
+### Keep the Monorepo, Deploy Services Separately
 
-单仓库不等于单进程。推荐继续保持 monorepo，但分别部署：
+A monorepo does not require a single process. Keep the monorepo while deploying these components separately:
 
-- `apps/web`：Next.js Web + API。
-- `apps/server`：Socket.IO。
-- LiveKit：独立服务。
-- Redis：托管 Redis。
-- 数据库：生产数据库（建议 PostgreSQL；需要设计迁移）。
-- 对象存储：生产录制和教材建议使用 S3-compatible storage。
+- `apps/web`: Next.js Web application and APIs.
+- `apps/server`: Socket.IO service.
+- LiveKit: independent service.
+- Redis: managed Redis.
+- Database: production database. PostgreSQL is recommended, but a migration must be designed.
+- Object storage: use S3-compatible storage for production recordings and learning materials.
 
-### 生产必做
+### Production Requirements
 
-- HTTPS + WSS。
-- 替换全部开发密钥并建立密钥轮换机制。
-- 真实 Redis；不要使用 `memory://`。
-- 不要把 SQLite 放在多个无状态实例之间共享。
-- 限制文件上传类型、大小和病毒扫描。
-- AI 请求配额、成本、超时、审计和内容安全。
-- 外部视频源的白名单或人工审核策略。
-- 日志脱敏，不记录 Key、密码、完整 token 和未成年人敏感信息。
-- 数据备份、恢复演练和迁移记录。
-- 录制和学生数据的保留期限、访问审计和删除流程。
-
----
-
-## 安全注意事项
-
-- `.env`、数据库、上传目录、LiveKit 本地密钥均被 `.gitignore` 排除。
-- `apps/web/scripts/configure-zenmux.cjs` 使用隐藏输入，但 `.env` 仍是磁盘上的明文秘密文件。
-- Socket ticket 是短期一次性凭证，不应替代数据库授权检查。
-- 家长邀请 token 在数据库中保存哈希，且绑定邮箱、过期时间和兑换状态。
-- 新建班级密码使用 bcrypt；历史明文密码在成功加入后迁移为哈希。
-- AI 的结构化输出必须经过 Zod 校验；流式中断内容不进入历史和后续上下文。
-- 模型 ID 必须在服务端精选列表中，不能相信浏览器传入的任意 ID。
-
-如果 Key 曾经出现在聊天、截图、提交历史或公开日志中，应立即在供应商控制台撤销并重新生成。
+- HTTPS and WSS.
+- Replace all development secrets and establish a secret-rotation process.
+- Use real Redis; do not use `memory://`.
+- Do not share a SQLite file across multiple stateless instances.
+- Restrict uploaded file types and sizes and add malware scanning.
+- Add AI request quotas, cost controls, timeouts, auditing, and content-safety controls.
+- Establish an allowlist or human-review process for external video sources.
+- Redact logs and never record keys, passwords, complete tokens, or sensitive information about minors.
+- Establish data backups, recovery drills, and migration records.
+- Define retention periods, access auditing, and deletion procedures for recordings and student data.
 
 ---
 
-## 常见问题
+## Security Considerations
 
-### 1. 摄像头/麦克风没有授权框
+- `.env` files, databases, upload directories, and local LiveKit secrets are excluded through `.gitignore`.
+- `apps/web/scripts/configure-zenmux.cjs` hides input, but `.env` remains a plaintext secret file on disk.
+- A Socket ticket is a short-lived, single-use credential and must not replace database authorization checks.
+- Parent invitation tokens are stored as hashes and are constrained by an email address, expiration time, and redemption status.
+- New class passwords use bcrypt; legacy plaintext passwords migrate to hashes after a successful join.
+- Structured AI output must pass Zod validation. Interrupted stream content does not enter history or subsequent context.
+- Model IDs must exist in the server-side curated list. Never trust an arbitrary model ID received from the browser.
 
-检查：
+If a key has appeared in chat, a screenshot, commit history, or public logs, revoke it immediately in the provider console and generate a replacement.
 
-- 地址必须是 `http://localhost:3000` 或 HTTPS。
-- `Permissions-Policy` 是否允许 `camera=(self), microphone=(self)`。
-- Edge/Chrome 站点设置是否屏蔽 localhost。
-- Windows 隐私设置是否允许桌面应用访问相机/麦克风。
-- 设备是否被会议软件占用。
+---
 
-### 2. Next dev 启动时触发 safe-delete 错误
+## Troubleshooting
 
-某些受保护环境会阻止 Next 删除大量 `.next` 文件。不要绕过保护；将旧 `.next` **改名备份**，再启动生成新缓存。`.next.backup-*` 已被 Git 忽略。
+### 1. No Camera or Microphone Permission Prompt
 
-### 3. Tailwind 提示 `border-border` 不存在
+Check the following:
 
-通常是从错误工作目录启动 Next，导致 Tailwind 找不到配置。请在 `apps/web` 目录启动，或确保进程工作目录指向该目录。
+- The address must be `http://localhost:3000` or HTTPS.
+- `Permissions-Policy` must allow `camera=(self), microphone=(self)`.
+- Edge or Chrome site settings must not block localhost.
+- Windows privacy settings must allow desktop applications to access the camera and microphone.
+- Another conferencing application must not be holding the device exclusively.
 
-### 4. Prisma 报原生引擎平台不匹配
+### 2. A Safe-Delete Error Appears When Starting Next.js Development Mode
 
-删除/移走复制来的依赖并在当前系统重新安装，然后执行：
+Some protected environments prevent Next.js from deleting a large number of `.next` files. Do not bypass the protection. **Rename and back up** the old `.next` directory, then restart Next.js to generate a fresh cache. `.next.backup-*` is already ignored by Git.
+
+### 3. Tailwind Reports That `border-border` Does Not Exist
+
+Next.js was probably started from the wrong working directory, preventing Tailwind from locating its configuration. Start the process from `apps/web`, or make sure its working directory points there.
+
+### 4. Prisma Reports a Native Engine Platform Mismatch
+
+Remove or move dependencies copied from another operating system, reinstall them on the current system, and run:
 
 ```powershell
 pnpm db:generate
 ```
 
-### 5. 学伴显示已配置但回答失败
+### 5. An AI Tutor Appears Configured but Cannot Answer
 
-- 确认 ZenMux Key 有效、余额充足。
-- 确认所选模型对账户开放。
-- 查看 ZenMux 调用日志。
-- `500 internal_server_error` 可能是上游线路错误，重启本地服务不一定解决。
-- 模型列表只保留四项，不表示四项都保证可用。
+- Confirm that the ZenMux key is valid and the account has sufficient balance.
+- Confirm that the selected model is available to the account.
+- Review the ZenMux request logs.
+- A `500 internal_server_error` may indicate an upstream routing issue that restarting local services will not resolve.
+- The curated list contains four models, but this does not guarantee that all four are always available.
 
-### 6. 流式回答出现一半后中断
+### 6. A Streamed Answer Stops Halfway Through
 
-该条会标记“部分内容未保存”，不会污染历史。常见原因：上游超时、网络断开、非正常 `finish_reason`、缺失 `[DONE]` 或最终 JSON 不合法。重新提问即可；不要把部分答案当作已验证结果。
+The message is marked as "Partial content not saved" and does not contaminate history. Common causes include an upstream timeout, network interruption, abnormal `finish_reason`, missing `[DONE]`, or invalid final JSON. Ask the question again, and do not treat the partial answer as a validated result.
 
-### 7. 学生看不到教师上传的教材
+### 7. A Student Cannot See Materials Uploaded by the Teacher
 
-确认学生已经加入班级，并成功加入 Socket 房间。教师上传后会广播 `class-files-changed`，学生重新请求文件列表；即使广播失败，页面也有轮询和手动刷新兜底。
+Confirm that the student is enrolled and has successfully joined the Socket room. After the teacher uploads a file, the client broadcasts `class-files-changed`, and the student requests the file list again. If the broadcast fails, polling and manual refresh remain available as fallbacks.
 
-### 8. 录制黑屏或无法保存
+### 8. A Recording Is Black or Cannot Be Saved
 
-- 先开启摄像头并确认页面中存在视频预览。
-- 即使没有视频轨，也应录到占位画面而非纯黑。
-- 保持课堂标签页打开。
-- 检查 `UPLOAD_ROOT` 权限和磁盘空间。
-- 检查数据库是否存在长期无心跳的录制记录。
+- Turn on the camera first and confirm that a video preview appears on the page.
+- Even without a video track, the recorder should capture a placeholder rather than a completely black frame.
+- Keep the classroom tab open.
+- Check `UPLOAD_ROOT` permissions and available disk space.
+- Check the database for recording records that have remained without a heartbeat for an extended period.
 
-### 9. 学生不能开摄像头/麦克风
+### 9. A Student Cannot Turn On the Camera or Microphone
 
-这是当前产品规则：普通课堂学生 token 为 subscribe-only。若要允许学生发布，需要修改产品权限并重新评估课堂管理和录制布局。
+This is the current product policy: regular classroom students receive subscribe-only tokens. Allowing students to publish requires a product-permission change and a new assessment of classroom moderation and recording layout.
 
-### 10. `E:\apps\AgenticEduverse` 是什么
+### 10. What Is `E:\apps\AgenticEduverse`?
 
-这是迁移 Git 元数据前创建的空子仓库目录。Git 根现在是 `E:\apps`；该空目录已被忽略，不要在里面再次复制项目。
+It is the empty sub-repository directory created before the Git metadata was moved. The Git root is now `E:\apps`. The empty directory is ignored; do not copy the project into it again.
 
 ---
 
-## Git 工作流
+## Git Workflow
 
-仓库根目录：
+Repository root:
 
 ```text
 E:\apps
 ```
 
-当前分支：`main`。
+Current branch: `main`.
 
-推荐流程：
+Recommended workflow:
 
 ```powershell
 git status
@@ -708,40 +708,39 @@ git diff --cached
 git commit -m "Describe the change"
 ```
 
-当前没有默认远程地址。配置远程前先确认仓库可见性，并再次检查敏感信息：
+Before configuring or using a remote, confirm the repository visibility and inspect the project for sensitive information again:
 
 ```powershell
-git remote add origin <REMOTE_URL>
 git remote -v
 git push -u origin main
 ```
 
-不要强制推送，不要提交 `.env`，不要用 `git add -f` 绕过忽略规则。
+Do not force-push, do not commit `.env`, and do not use `git add -f` to bypass ignore rules.
 
 ---
 
-## 项目边界
+## Project Scope
 
-当前实现已经可以完整本地演示，但以下内容仍属于生产化工作：
+The current implementation supports a complete local demonstration, but the following items remain production-readiness work:
 
-- 多实例 Socket/Redis 和数据库高可用。
-- 服务端 LiveKit Egress、可靠转码和对象存储。
-- 全站每个深层页面和 API 文案的完整国际化。
-- 视频推荐内容审核与稳定官方 API。
-- AI 成本控制、内容审核、模型回退和供应商 SLA。
-- 移动端、无障碍、弱网优化和正式负载测试。
-- 未成年人隐私、地区法规和学校数据治理流程。
+- Multi-instance Socket/Redis deployment and database high availability.
+- Server-side LiveKit Egress, reliable transcoding, and object storage.
+- Complete internationalization of every deeply nested page and API message.
+- Video recommendation moderation and a stable official API.
+- AI cost controls, content review, model fallback, and provider SLAs.
+- Mobile clients, accessibility, weak-network optimization, and formal load testing.
+- Privacy for minors, regional legal compliance, and school data-governance procedures.
 
 ---
 
-## 许可证与贡献
+## License and Contributing
 
-当前 `package.json` 标记为 private，仓库未声明开源许可证。未经项目所有者确认，不应公开发布或复制为开源项目。
+The current `package.json` is marked as private, and the repository does not declare an open-source license. Do not publish it publicly or reproduce it as an open-source project without confirmation from the project owner.
 
-提交功能前请确保：
+Before submitting a feature, make sure that:
 
-1. 需求和角色权限明确。
-2. 前后端共享类型同步。
-3. 类型检查和相关测试通过。
-4. 不包含密钥、数据库和个人数据。
-5. README 或相关说明在行为改变时同步更新。
+1. Requirements and role permissions are clearly defined.
+2. Shared client/server types are synchronized.
+3. Type checks and relevant tests pass.
+4. The change contains no secrets, databases, or personal data.
+5. The README or related documentation is updated whenever behavior changes.
