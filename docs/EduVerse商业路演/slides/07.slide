@@ -1,0 +1,48 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>From a question to the right video</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  {/* B · 4-step flow */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 160, flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+    {[
+      { icon: 'comments', h: '1 · Student asks', p: '"What does a fraction mean?"' },
+      { icon: 'brain', h: '2 · AI finds the point', p: 'The answer also carries 1–3 clean search words.' },
+      { icon: 'search', h: '3 · We search public videos', p: 'Real teacher videos, filtered and ranked.' },
+      { icon: 'external-link', h: '4 · Student clicks', p: 'A new tab opens the video. Not helpful? Just close the list.' },
+    ].map((s, i) => (
+      <Box key={s.h} style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+        <Box style={{ flex: 1, height: 240, background: '#F1F5F9', borderRadius: 14, padding: 22, flexDirection: 'column', justifyContent: 'space-between' }}>
+          <FAIcon name={s.icon} style={{ fill: '#1D4ED8', width: 34, height: 34 }} />
+          <Box style={{ flexDirection: 'column', gap: 6 }}>
+            <Text style={{ fontSize: 16.5, fontWeight: 'bold', color: '#0F172A' }}>{s.h}</Text>
+            <Text style={{ fontSize: 13.5, lineHeight: 1.5, color: '#0F172A', opacity: 0.68 }}>{s.p}</Text>
+          </Box>
+        </Box>
+        {i < 3 && <FAIcon name='arrow-right' style={{ fill: '#1D4ED8', width: 22, height: 22, marginHorizontal: 6 }} />}
+      </Box>
+    ))}
+  </Box>
+
+  {/* Stat chips */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 450, flexDirection: 'row', gap: 28 }}>
+    {[
+      { n: '5', t: 'videos suggested under every answer' },
+      { n: '~1s', t: 'to find them, with a 30-minute cache' },
+      { n: '0', t: 'paid search keys — open public data only' },
+    ].map((c) => (
+      <Box key={c.n} style={{ flex: 1, height: 130, borderRadius: 14, border: '2px solid rgba(29,78,216,0.18)', padding: 20, flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 40, fontWeight: 'bold', color: '#1D4ED8', lineHeight: 1 }}>{c.n}</Text>
+        <Text style={{ fontSize: 14, lineHeight: 1.45, color: '#0F172A', opacity: 0.72 }}>{c.t}</Text>
+      </Box>
+    ))}
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>07 / 14</Text>
+  </Box>
+</Slide>

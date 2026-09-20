@@ -1,0 +1,42 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>A live classroom that never loses a lesson</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  {/* B · 2x2 feature grid */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 150, flexDirection: 'row', gap: 26 }}>
+    {[
+      { icon: 'video', h: 'HD video & screen share', p: 'Teacher and students meet in the browser — camera, microphone and screen sharing, no app to install.' },
+      { icon: 'record-vinyl', h: 'One-click recording', p: 'The lesson is recorded as one video. It auto-saves even if the page closes, and a heartbeat keeps the file safe.' },
+      { icon: 'play-circle', h: 'Playback with the whiteboard', p: 'Replay the video and watch the shared whiteboard redraw itself, stroke by stroke, in sync.' },
+      { icon: 'shield-alt', h: 'Clear, honest errors', p: 'If a camera is blocked, the app says exactly which setting to fix — in the parent\'s language.' },
+    ].map((f) => (
+      <Box key={f.h} style={{ flex: 1, height: 220, background: '#F1F5F9', borderRadius: 14, padding: 26, flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Box style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <Box style={{ width: 44, height: 44, borderRadius: 11, background: '#1D4ED8', justifyContent: 'center', alignItems: 'center' }}>
+            <FAIcon name={f.icon} style={{ fill: '#FFFFFF', width: 22, height: 22 }} />
+          </Box>
+          <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#0F172A' }}>{f.h}</Text>
+        </Box>
+        <Text style={{ fontSize: 14.5, lineHeight: 1.55, color: '#0F172A', opacity: 0.72 }}>{f.p}</Text>
+      </Box>
+    ))}
+  </Box>
+
+  {/* Bottom strip: recovery stat */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 428, height: 150, borderRadius: 16, background: 'rgba(29,78,216,0.06)', padding: '26px 40px', flexDirection: 'row', alignItems: 'center', gap: 40 }}>
+    <Text style={{ fontSize: 62, fontWeight: 'bold', color: '#1D4ED8', lineHeight: 1 }}>0</Text>
+    <Text style={{ fontSize: 17, lineHeight: 1.55, color: '#0F172A', opacity: 0.78, flex: 1 }}>
+      recordings lost in our final test round — close the tab, switch rooms or leave early,
+      and the lesson still saves itself. <span style={{ fontWeight: 'bold', color: '#1D4ED8' }}>Engineered for real classrooms, not perfect ones.</span>
+    </Text>
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>10 / 14</Text>
+  </Box>
+</Slide>

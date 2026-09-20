@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx watch --env-file=.env src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "lint": "echo ok",
+    "typecheck": "tsc --noEmit --rootDir ../..",
+    "test": "tsx --test src/**/*.test.ts"
+  },
+  "dependencies": {
+    "@eduverse/ai": "workspace:*",
+    "@eduverse/db": "workspace:*",
+    "@eduverse/shared": "workspace:*",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.19.0",
+    "ioredis": "^5.3.2",
+    "ioredis-mock": "^8.13.1",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/ioredis-mock": "^8.2.8",
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}

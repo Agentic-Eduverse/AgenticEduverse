@@ -1,0 +1,15 @@
+{
+  "name": "eduverse-local",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "dev:web": "pnpm --filter web dev",
+    "dev:server": "pnpm --filter server dev",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "db:generate": "prisma generate --schema packages/db/prisma/schema.prisma"
+  },
+  "devDependencies": { "prisma": "6.19.3" },
+  "dependencies": { "@prisma/client": "6.19.3" }
+}

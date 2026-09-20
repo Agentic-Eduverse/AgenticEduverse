@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "paths": {
+      "@eduverse/db": ["../../packages/db/src/index.ts"],
+      "@eduverse/ai": ["../../packages/ai/src/index.ts"],
+      "@eduverse/shared": ["../../packages/shared/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

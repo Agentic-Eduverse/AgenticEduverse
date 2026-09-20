@@ -1,0 +1,52 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>What makes us different</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  <Text style={{ position: 'absolute', left: 64, top: 108, fontSize: 17, lineHeight: 1.5, color: '#0F172A', opacity: 0.72 }}>
+    Most AI tutors chat alone with a child. We put AI inside a real classroom, with a real teacher and real parents.
+  </Text>
+
+  {/* B · Comparison built from boxes */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 168 }}>
+    {/* header row */}
+    <Box style={{ flexDirection: 'row', gap: 14, marginBottom: 12 }}>
+      <Box style={{ width: 250 }} />
+      {['Typical AI tutor app', 'Classic LMS platform', 'Agentic EduVerse'].map((h, i) => (
+        <Box key={h} style={{ flex: 1, height: 56, borderRadius: 10, background: i === 2 ? '#1D4ED8' : '#F1F5F9', justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 15.5, fontWeight: 'bold', color: i === 2 ? '#FFFFFF' : '#0F172A' }}>{h}</Text>
+        </Box>
+      ))}
+    </Box>
+    {[
+      ['Live classroom with video', false, true, true],
+      ['AI that guides, not answers', true, false, true],
+      ['Auto-suggested teacher videos', false, false, true],
+      ['Parents verified & in the loop', false, 'partial', true],
+      ['Multilingual interface', 'partial', false, true],
+      ['Runs without paid AI keys', true, true, true],
+    ].map((row) => (
+      <Box key={row[0]} style={{ flexDirection: 'row', gap: 14, marginBottom: 10 }}>
+        <Box style={{ width: 250, justifyContent: 'center' }}>
+          <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#0F172A' }}>{row[0]}</Text>
+        </Box>
+        {[row[1], row[2], row[3]].map((v, i) => (
+          <Box key={i} style={{ flex: 1, height: 46, borderRadius: 10, background: i === 2 ? 'rgba(6,182,212,0.10)' : '#F8FAFC', border: i === 2 ? '2px solid rgba(6,182,212,0.35)' : '1px solid rgba(15,23,42,0.06)', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8 }}>
+            {v === true && <FAIcon name='check-circle' style={{ fill: i === 2 ? '#06B6D4' : '#1D4ED8', width: 18, height: 18 }} />}
+            {v === 'partial' && <FAIcon name='adjust' style={{ fill: '#0F172A', width: 18, height: 18, opacity: 0.4 }} />}
+            {v === false && <FAIcon name='times-circle' style={{ fill: '#0F172A', width: 18, height: 18, opacity: 0.25 }} />}
+            <Text style={{ fontSize: 13.5, color: '#0F172A', opacity: v === true ? 0.85 : 0.5 }}>{v === true ? 'Yes' : v === 'partial' ? 'Partly' : 'No'}</Text>
+          </Box>
+        ))}
+      </Box>
+    ))}
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>11 / 14</Text>
+  </Box>
+</Slide>

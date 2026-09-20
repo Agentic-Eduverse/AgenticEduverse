@@ -1,0 +1,57 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>A simple way to grow</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  {/* B1 · Three revenue cards */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 140, flexDirection: 'row', gap: 26 }}>
+    {[
+      { icon: 'chalkboard-teacher', h: 'Free for teachers', p: 'Teachers never pay. A free classroom brings the whole school through the door.', tag: 'Growth engine' },
+      { icon: 'home', h: 'Family plan', p: 'Parents pay a small monthly fee for the AI companion, the translator and weekly reports.', tag: 'B2C revenue' },
+      { icon: 'school', h: 'School licence', p: 'One contract per school: unlimited classes, admin tools and priority support.', tag: 'B2B revenue' },
+    ].map((c) => (
+      <Box key={c.h} style={{ flex: 1, height: 210, background: '#F1F5F9', borderRadius: 14, padding: 24, flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Box style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Box style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+            <FAIcon name={c.icon} style={{ fill: '#1D4ED8', width: 26, height: 26 }} />
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#0F172A' }}>{c.h}</Text>
+          </Box>
+          <Box style={{ paddingHorizontal: 10, paddingVertical: 5, borderRadius: 999, background: '#1D4ED8' }}>
+            <Text style={{ fontSize: 11.5, fontWeight: 'bold', color: '#FFFFFF' }}>{c.tag}</Text>
+          </Box>
+        </Box>
+        <Text style={{ fontSize: 14.5, lineHeight: 1.55, color: '#0F172A', opacity: 0.72 }}>{c.p}</Text>
+      </Box>
+    ))}
+  </Box>
+
+  {/* B2 · Roadmap */}
+  <Text style={{ position: 'absolute', left: 64, top: 402, fontSize: 21, fontWeight: 'bold', color: '#0F172A' }}>Next 12 months</Text>
+  <Box style={{ position: 'absolute', left: 90, right: 90, top: 470, height: 4, background: 'linear-gradient(90deg,#1D4ED8 0%,#06B6D4 100%)', borderRadius: 2 }} />
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 440, flexDirection: 'row', gap: 26 }}>
+    {[
+      { q: 'Now', t: 'Pilot schools', p: 'Run free pilots with local schools and collect teacher feedback.' },
+      { q: '+4 months', t: 'Mobile apps', p: 'Bring the student portal and parent reports to phones.' },
+      { q: '+12 months', t: 'Content library', p: 'Curated, teacher-approved video library inside the AI answers.' },
+    ].map((m, i) => (
+      <Box key={m.t} style={{ flex: 1, flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+        <Box style={{ width: 22, height: 22, borderRadius: 11, background: '#FFFFFF', border: '5px solid #1D4ED8' }} />
+        <Box style={{ background: '#F1F5F9', borderRadius: 12, padding: 16, width: '100%', flexDirection: 'column', gap: 5, flex: 1 }}>
+          <Box style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#0F172A' }}>{m.t}</Text>
+            <Text style={{ fontSize: 12, fontWeight: 'bold', color: '#06B6D4' }}>{m.q}</Text>
+          </Box>
+          <Text style={{ fontSize: 13.5, lineHeight: 1.5, color: '#0F172A', opacity: 0.68 }}>{m.p}</Text>
+        </Box>
+      </Box>
+    ))}
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>13 / 14</Text>
+  </Box>
+</Slide>

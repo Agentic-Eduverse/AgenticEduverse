@@ -1,0 +1,20 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#0F172A', position: 'relative' }}>
+  {/* subtle accent glow */}
+  <Box style={{ position: 'absolute', top: -120, right: -120, width: 420, height: 420, borderRadius: 210, background: 'radial-gradient(circle, rgba(6,182,212,0.28) 0%, rgba(6,182,212,0) 70%)' }} />
+  <Box style={{ position: 'absolute', bottom: -140, left: -100, width: 460, height: 460, borderRadius: 230, background: 'radial-gradient(circle, rgba(29,78,216,0.30) 0%, rgba(29,78,216,0) 70%)' }} />
+
+  <Box style={{ width: '100%', height: '100%', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 34, position: 'relative', zIndex: 1 }}>
+    <Box style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg,#1D4ED8 0%,#06B6D4 100%)', justifyContent: 'center', alignItems: 'center' }}>
+      <FAIcon name='graduation-cap' style={{ fill: '#FFFFFF', width: 34, height: 34 }} />
+    </Box>
+    <Text style={{ fontSize: 46, fontWeight: 'bold', color: '#FFFFFF', textAlign: 'center', lineHeight: 1.3 }}>
+      Education works best when everyone<br />is in the same room.
+    </Text>
+    <Text style={{ fontSize: 20, color: '#FFFFFF', opacity: 0.72, textAlign: 'center', lineHeight: 1.5 }}>
+      We built the room. The AI is already teaching in it.
+    </Text>
+    <Box style={{ width: 110, height: 4, borderRadius: 2, background: 'linear-gradient(135deg,#1D4ED8 0%,#06B6D4 100%)' }} />
+    <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#06B6D4' }}>Thank you</Text>
+    <Text style={{ fontSize: 14, color: '#FFFFFF', opacity: 0.5 }}>Agentic EduVerse · Business Roadshow 2026 · Live demo ready</Text>
+  </Box>
+</Slide>

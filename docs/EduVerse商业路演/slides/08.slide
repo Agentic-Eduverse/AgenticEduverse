@@ -1,0 +1,48 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>Built for many languages from day one</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  {/* Left: text */}
+  <Box style={{ position: 'absolute', left: 64, top: 150, width: 430, flexDirection: 'column', gap: 30 }}>
+    <Box style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 24 }}>
+      <Box style={{ flexDirection: 'column', gap: 6 }}>
+        <Text style={{ fontSize: 84, fontWeight: 'bold', color: '#1D4ED8', lineHeight: 1 }}>8</Text>
+        <Text style={{ fontSize: 15, lineHeight: 1.4, color: '#0F172A', opacity: 0.72 }}>interface languages,<br />switched in one click</Text>
+      </Box>
+      <Box style={{ width: 2, height: 90, background: 'rgba(15,23,42,0.12)' }} />
+      <Box style={{ flexDirection: 'column', gap: 6 }}>
+        <Text style={{ fontSize: 84, fontWeight: 'bold', color: '#06B6D4', lineHeight: 1 }}>17</Text>
+        <Text style={{ fontSize: 15, lineHeight: 1.4, color: '#0F172A', opacity: 0.72 }}>languages in the<br />built-in translator</Text>
+      </Box>
+    </Box>
+    {[
+      { icon: 'globe', h: 'Whole product, not a widget', p: 'Menus, buttons, forms and messages all follow the chosen language — even after refresh.' },
+      { icon: 'exchange', h: 'Two-way translator', p: 'Auto-detects the source language, swaps directions, copies the result with one click.' },
+    ].map((f) => (
+      <Box key={f.h} style={{ flexDirection: 'row', gap: 14, alignItems: 'flex-start' }}>
+        <FAIcon name={f.icon} style={{ fill: '#1D4ED8', width: 24, height: 24, marginTop: 2 }} />
+        <Box style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#0F172A' }}>{f.h}</Text>
+          <Text style={{ fontSize: 13.5, lineHeight: 1.5, color: '#0F172A', opacity: 0.68 }}>{f.p}</Text>
+        </Box>
+      </Box>
+    ))}
+  </Box>
+
+  {/* Right: screenshot */}
+  <Box style={{ position: 'absolute', right: 64, top: 150, width: 660, background: '#F1F5F9', borderRadius: 14, padding: 14, boxShadow: '0 8px 28px rgba(15,23,42,0.14)' }}>
+    <Image src='assets/translator_en.png' style={{ width: '100%', height: 354, objectFit: 'cover', borderRadius: 8 }} />
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.55, marginTop: 10, textAlign: 'center' }}>
+      Real product — English, Japanese, French, German and 13 more, with auto-detect
+    </Text>
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>08 / 14</Text>
+  </Box>
+</Slide>

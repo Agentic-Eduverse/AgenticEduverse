@@ -1,0 +1,27 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative', flexDirection: 'row' }}>
+  {/* Left: title zone */}
+  <Box style={{ width: '560px', height: '100%', flexDirection: 'column', justifyContent: 'center', padding: '0 0 0 64px', position: 'relative', zIndex: 1 }}>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 28 }}>
+      <Box style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg,#1D4ED8 0%,#06B6D4 100%)', justifyContent: 'center', alignItems: 'center' }}>
+        <FAIcon name='graduation-cap' style={{ fill: '#FFFFFF', width: 22, height: 22 }} />
+      </Box>
+      <Text style={{ fontSize: 14, letterSpacing: 3, color: '#0F172A', opacity: 0.55, fontWeight: 'bold' }}>BUSINESS ROADSHOW · 2026</Text>
+    </Box>
+    <Text style={{ fontSize: 76, fontWeight: 'bold', lineHeight: 1.08, color: '#0F172A' }}>
+      Agentic<br />EduVerse
+    </Text>
+    <Box style={{ width: 120, height: 5, borderRadius: 3, background: 'linear-gradient(135deg,#1D4ED8 0%,#06B6D4 100%)', margin: '26px 0' }} />
+    <Text style={{ fontSize: 19, lineHeight: 1.55, color: '#0F172A', opacity: 0.72 }}>
+      One universe. Three portals.<br />An AI classroom that already runs.
+    </Text>
+    <Text style={{ fontSize: 13, color: '#0F172A', opacity: 0.45, marginTop: 40 }}>
+      Team EduVerse — Live demo available
+    </Text>
+  </Box>
+
+  {/* Right: full-height product screenshot */}
+  <Box style={{ width: '720px', height: '100%', position: 'relative' }}>
+    <Image src='assets/home_en.png' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+    <Box style={{ position: 'absolute', left: 0, top: 0, width: '100%', height: '100%', background: 'linear-gradient(90deg,#FFFFFF 0%,rgba(255,255,255,0) 22%)' }} />
+  </Box>
+</Slide>

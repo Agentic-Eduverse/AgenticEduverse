@@ -1,0 +1,14 @@
+eduverse.localhost {
+  tls internal
+  reverse_proxy host.docker.internal:3000
+}
+
+livekit.eduverse.localhost {
+  tls internal
+  reverse_proxy livekit:7880
+}
+
+media.eduverse.localhost {
+  tls internal
+  reverse_proxy minio:9000
+}

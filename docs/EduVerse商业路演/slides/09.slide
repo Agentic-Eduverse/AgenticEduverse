@@ -1,0 +1,42 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>Parents stay in the loop — safely</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  {/* Left: screenshot */}
+  <Box style={{ position: 'absolute', left: 64, top: 150, width: 660, background: '#F1F5F9', borderRadius: 14, padding: 14, boxShadow: '0 8px 28px rgba(15,23,42,0.14)' }}>
+    <Image src='assets/parent_en.png' style={{ width: '100%', height: 354, objectFit: 'cover', borderRadius: 8 }} />
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.55, marginTop: 10, textAlign: 'center' }}>
+      Real product — linked child, weekly window, one-tap AI report
+    </Text>
+  </Box>
+
+  {/* Right: text + safety chips */}
+  <Box style={{ position: 'absolute', right: 64, top: 150, width: 430, flexDirection: 'column', gap: 24 }}>
+    <Text style={{ fontSize: 16, lineHeight: 1.55, color: '#0F172A', opacity: 0.75 }}>
+      A parent can never claim a child by typing a name. The teacher sends an invite; the link does the rest.
+    </Text>
+    {[
+      { icon: 'link', h: 'Invite-only link', p: 'Created by the teacher for one student, one email.' },
+      { icon: 'clock', h: 'Expires in 24 hours', p: 'And works exactly once. Old links simply die.' },
+      { icon: 'envelope', h: 'Email must match', p: 'Only the invited parent account can accept it.' },
+      { icon: 'file-alt', h: 'Weekly AI growth report', p: 'Effort, emotions and quiz results in plain words.' },
+    ].map((f) => (
+      <Box key={f.h} style={{ flexDirection: 'row', gap: 14, alignItems: 'flex-start' }}>
+        <FAIcon name={f.icon} style={{ fill: '#1D4ED8', width: 24, height: 24, marginTop: 2 }} />
+        <Box style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#0F172A' }}>{f.h}</Text>
+          <Text style={{ fontSize: 13.5, lineHeight: 1.5, color: '#0F172A', opacity: 0.68 }}>{f.p}</Text>
+        </Box>
+      </Box>
+    ))}
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>09 / 14</Text>
+  </Box>
+</Slide>

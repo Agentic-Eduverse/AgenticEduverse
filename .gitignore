@@ -1,0 +1,51 @@
+# Dependencies and package-manager caches
+node_modules/
+.pnpm-cli/
+.cache/
+
+# Secrets and machine-local environment files (examples stay trackable)
+.env
+.env.*
+!.env.example
+!**/.env.example
+apps/*/.env
+apps/*/.env.*
+!apps/*/.env.example
+
+# Runtime data, databases, uploads and local service state
+data/
+.redis-local/
+
+# Build/test/editor output
+apps/*/.next/
+apps/*/.next.backup-*/
+apps/*/dist/
+packages/*/dist/
+packages/db/generated/
+coverage/
+*.tsbuildinfo
+validation/
+apps/test-artifacts/
+*.bak-memory-mode
+package-lock.json
+.slidep/
+
+# Local LiveKit server: binary + workstation config containing API secrets
+apps/infra/media/bin/
+apps/infra/media/livekit.local.yaml
+
+# WorkBuddy project state and generated cloud config
+.workbuddy/
+.wbapp_*.genie
+
+# Migrated/temporary local directories
+.old-node-modules/
+AgenticEduverse/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+*.tmp

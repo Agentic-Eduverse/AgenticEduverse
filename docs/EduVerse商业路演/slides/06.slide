@@ -1,0 +1,44 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>The AI companion teaches — it does not cheat</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#06B6D4', marginTop: 10 }} />
+  </Box>
+
+  {/* Left: screenshot */}
+  <Box style={{ position: 'absolute', left: 64, top: 145, width: 680, background: '#F1F5F9', borderRadius: 14, padding: 14, boxShadow: '0 8px 28px rgba(15,23,42,0.14)' }}>
+    <Image src='assets/tutor_en.png' style={{ width: '100%', height: 366, objectFit: 'cover', borderRadius: 8 }} />
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.55, marginTop: 10, textAlign: 'center' }}>
+      Real product — the answer comes with 5 real teacher videos below it
+    </Text>
+  </Box>
+
+  {/* Right: feature stack */}
+  <Box style={{ position: 'absolute', right: 64, top: 150, width: 400, flexDirection: 'column', gap: 20 }}>
+    <Box style={{ background: 'rgba(6,182,212,0.10)', borderRadius: 12, padding: 18, flexDirection: 'column', gap: 6 }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#0F172A' }}>Guided, not instant</Text>
+      <Text style={{ fontSize: 14, lineHeight: 1.5, color: '#0F172A', opacity: 0.72 }}>
+        The AI asks questions back and gives a practice problem — the student still thinks.
+      </Text>
+    </Box>
+    {[
+      { icon: 'book', h: 'Five subject companions', p: 'Maths, Chinese, English, coding and general — each keeps its own chat history.' },
+      { icon: 'video', h: 'Five real videos per answer', p: 'Found in about one second from public teaching videos. One click opens the video.' },
+      { icon: 'history', h: 'Nothing gets lost', p: 'Every session is saved per companion and can be reopened from history.' },
+    ].map((f) => (
+      <Box key={f.h} style={{ flexDirection: 'row', gap: 14, alignItems: 'flex-start' }}>
+        <FAIcon name={f.icon} style={{ fill: '#1D4ED8', width: 24, height: 24, marginTop: 2 }} />
+        <Box style={{ flex: 1, flexDirection: 'column', gap: 4 }}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#0F172A' }}>{f.h}</Text>
+          <Text style={{ fontSize: 13.5, lineHeight: 1.5, color: '#0F172A', opacity: 0.68 }}>{f.p}</Text>
+        </Box>
+      </Box>
+    ))}
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>06 / 14</Text>
+  </Box>
+</Slide>

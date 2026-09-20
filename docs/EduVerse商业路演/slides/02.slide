@@ -1,0 +1,43 @@
+<Slide style={{ width: '1280px', height: '720px', background: '#FFFFFF', position: 'relative' }}>
+  {/* A · Title */}
+  <Box style={{ position: 'absolute', left: 64, top: 20 }}>
+    <Text style={{ fontSize: 34, fontWeight: 'bold', color: '#0F172A' }}>The world has a teaching gap</Text>
+    <Box style={{ width: 120, height: 4, borderRadius: 2, background: '#1D4ED8', marginTop: 10 }} />
+  </Box>
+
+  {/* B · Two giant numbers */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 140, flexDirection: 'row', gap: 32 }}>
+    <Box style={{ flex: 1, height: 400, background: '#F1F5F9', borderRadius: 16, padding: 40, flexDirection: 'column', justifyContent: 'space-between' }}>
+      <FAIcon name='chalkboard-teacher' style={{ fill: '#1D4ED8', width: 44, height: 44 }} />
+      <Text style={{ fontSize: 104, fontWeight: 'bold', color: '#1D4ED8', lineHeight: 1 }}>44M</Text>
+      <Text style={{ fontSize: 19, lineHeight: 1.5, color: '#0F172A' }}>
+        more teachers are needed <span style={{ fontWeight: 'bold' }}>by 2030</span> to give every child a classroom.
+      </Text>
+      <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.5 }}>Source: UNESCO, Global Report on Teachers</Text>
+    </Box>
+    <Box style={{ flex: 1, height: 400, background: '#F1F5F9', borderRadius: 16, padding: 40, flexDirection: 'column', justifyContent: 'space-between' }}>
+      <FAIcon name='book-open' style={{ fill: '#06B6D4', width: 44, height: 44 }} />
+      <Text style={{ fontSize: 104, fontWeight: 'bold', color: '#0F172A', lineHeight: 1 }}>
+        7<span style={{ fontSize: 56, color: '#06B6D4' }}>/10</span>
+      </Text>
+      <Text style={{ fontSize: 19, lineHeight: 1.5, color: '#0F172A' }}>
+        ten-year-olds in low- and middle-income countries <span style={{ fontWeight: 'bold' }}>cannot read a short story</span>.
+      </Text>
+      <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.5 }}>Source: World Bank, Learning Poverty</Text>
+    </Box>
+  </Box>
+
+  {/* Punch line */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, top: 572, flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+    <Box style={{ width: 6, height: 34, borderRadius: 3, background: '#06B6D4' }} />
+    <Text style={{ fontSize: 21, fontWeight: 'bold', color: '#0F172A' }}>
+      One teacher cannot be everywhere. We built software that helps the whole room learn together.
+    </Text>
+  </Box>
+
+  {/* C · Footer */}
+  <Box style={{ position: 'absolute', left: 64, right: 64, bottom: 0, height: 60, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>Agentic EduVerse · Roadshow 2026</Text>
+    <Text style={{ fontSize: 12, color: '#0F172A', opacity: 0.45 }}>02 / 14</Text>
+  </Box>
+</Slide>
