@@ -8,6 +8,8 @@ import {
   Text,
   Ticker,
   TextStyle,
+  Sprite,
+  Assets,
 } from 'pixi.js'
 import type { Participant, EmotionType } from '@eduverse/shared'
 import { EMOTION_META } from '@/lib/emotion-meta'
@@ -25,6 +27,7 @@ interface AvatarConfig {
   skin: string
   hairStyle: string
   hairColor: string
+  customImageUrl?: string
 }
 
 const DEFAULT_SKIN_COLORS = ['#FFDFC4', '#F0D5BE', '#D4A574', '#C68642', '#8D5524']
@@ -37,6 +40,7 @@ function getAvatarConfig(participant: Participant): AvatarConfig {
     skin: config?.skin || DEFAULT_SKIN_COLORS[hash % DEFAULT_SKIN_COLORS.length],
     hairStyle: config?.hairStyle || ['short', 'long', 'curly'][hash % 3],
     hairColor: config?.hairColor || DEFAULT_HAIR_COLORS[hash % DEFAULT_HAIR_COLORS.length],
+    customImageUrl: typeof config?.customImageUrl === 'string' ? config.customImageUrl : undefined,
   }
 }
 
@@ -256,26 +260,43 @@ export default function VirtualClassroom({
     border.endFill()
     parent.addChild(border)
 
-    drawHair(
-      border,
-      avatarCfg.hairStyle,
-      avatarCfg.hairColor,
-      x,
-      y - radius * 0.3,
-      radius * 0.9
-    )
+    if (avatarCfg.customImageUrl) {
+      // Custom forge avatars are stored as data URLs. Loading is asynchronous in Pixi, so add
+      // the sprite when ready and redraw the stage only if the participant is still present.
+      void Assets.load(avatarCfg.customImageUrl).then((texture) => {
+        if (!parent || parent.destroyed) return
+        const sprite = new Sprite(texture)
+        sprite.anchor.set(0.5)
+        sprite.x = x
+        sprite.y = y
+        const diameter = radius * 1.82
+        const sourceWidth = Math.max(1, texture.width)
+        const sourceHeight = Math.max(1, texture.height)
+        const scale = Math.max(diameter / sourceWidth, diameter / sourceHeight)
+        sprite.scale.set(scale)
+        const mask = new Graphics()
+        mask.beginFill(0xffffff)
+        mask.drawCircle(x, y, radius * 0.9)
+        mask.endFill()
+        parent.addChild(mask)
+        parent.addChild(sprite)
+        sprite.mask = mask
+      }).catch(() => undefined)
+    } else {
+      drawHair(border, avatarCfg.hairStyle, avatarCfg.hairColor, x, y - radius * 0.3, radius * 0.9)
 
-    const eyes = new Graphics()
-    eyes.beginFill(0x1f2937)
-    eyes.drawCircle(x - radius * 0.25, y - radius * 0.05, radius * 0.08)
-    eyes.drawCircle(x + radius * 0.25, y - radius * 0.05, radius * 0.08)
-    eyes.endFill()
-    parent.addChild(eyes)
+      const eyes = new Graphics()
+      eyes.beginFill(0x1f2937)
+      eyes.drawCircle(x - radius * 0.25, y - radius * 0.05, radius * 0.08)
+      eyes.drawCircle(x + radius * 0.25, y - radius * 0.05, radius * 0.08)
+      eyes.endFill()
+      parent.addChild(eyes)
 
-    const mouth = new Graphics()
-    mouth.lineStyle(2, 0x1f2937, 1)
-    mouth.arc(x, y + radius * 0.2, radius * 0.15, 0, Math.PI)
-    parent.addChild(mouth)
+      const mouth = new Graphics()
+      mouth.lineStyle(2, 0x1f2937, 1)
+      mouth.arc(x, y + radius * 0.2, radius * 0.15, 0, Math.PI)
+      parent.addChild(mouth)
+    }
 
     const nameText = new Text({
       text: participant.name,

@@ -7,6 +7,7 @@ import { ChevronUp, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Participant, EmotionType } from '@eduverse/shared'
 import { EMOTION_META } from '@/lib/emotion-meta'
+import { useI18n } from '@/lib/i18n'
 
 interface RecentEmotion {
   userId: string
@@ -53,6 +54,7 @@ function getEmotionForUser(
 }
 
 export default function HeatMap({ participants, recentEmotions }: HeatMapProps) {
+  const { t } = useI18n()
   const [expanded, setExpanded] = useState(true)
 
   const students = useMemo(
@@ -88,8 +90,8 @@ export default function HeatMap({ participants, recentEmotions }: HeatMapProps) 
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-gradient-to-r from-emerald-400 via-amber-400 to-red-400" />
-            情感热力图
-            <span className="text-xs font-normal text-slate-500">（近30秒）</span>
+            {t('classroom.heatmapTitle')}
+            <span className="text-xs font-normal text-slate-500">({t('classroom.last30Seconds')})</span>
           </CardTitle>
           <Button
             variant="ghost"
@@ -115,7 +117,7 @@ export default function HeatMap({ participants, recentEmotions }: HeatMapProps) 
           >
             {students.length === 0 ? (
               <div className="col-span-full py-8 text-center text-sm text-slate-400">
-                暂无学生加入
+                {t('classroom.noStudents')}
               </div>
             ) : (
               students.map((student) => {
@@ -150,15 +152,20 @@ export default function HeatMap({ participants, recentEmotions }: HeatMapProps) 
           </div>
 
           <div className="border-t border-slate-100 pt-3">
-            <div className="text-xs font-medium text-slate-500 mb-2">统计</div>
+            <div className="text-xs font-medium text-slate-500 mb-2">{t('classroom.statistics')}</div>
             <div className="grid grid-cols-5 gap-2">
               {(['happy', 'confused', 'repeat', 'idea', 'neutral'] as const).map((k) => {
                 const emoji =
                   k === 'neutral' ? '😐' : (EMOTION_META as Record<string, { emoji: string }>)[k]?.emoji
-                const label =
-                  k === 'neutral'
-                    ? '中性'
-                    : (EMOTION_META as Record<string, { label: string }>)[k]?.label || k
+                const label = k === 'neutral'
+                  ? t('classroom.neutral')
+                  : k === 'happy'
+                    ? t('classroom.emotionHappy')
+                    : k === 'confused'
+                      ? t('classroom.emotionConfused')
+                      : k === 'repeat'
+                        ? t('classroom.emotionRepeat')
+                        : t('classroom.emotionIdea')
                 const dotClass =
                   k === 'neutral' ? 'bg-slate-400' : EMOTION_DOT[k]
                 return (

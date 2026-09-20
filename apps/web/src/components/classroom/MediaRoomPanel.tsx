@@ -12,6 +12,7 @@ import {
   type RecorderStats,
 } from '@/lib/browser-recorder'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n'
 
 type DeviceKind = 'camera' | 'microphone' | 'screen'
 type PermissionState = 'granted' | 'denied' | 'prompt' | 'unknown'
@@ -188,6 +189,7 @@ async function finalizeRecording(classId: string, reason = ''): Promise<void> {
 }
 
 export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { classId: string; isTeacher: boolean; tutoringId?: string }) {
+  const { t } = useI18n()
   const roomRef = useRef<Room | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
   const attachedRef = useRef(new Map<string, HTMLElement>())
@@ -201,6 +203,7 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
   const [uploading, setUploading] = useState(false)
   const [stats, setStats] = useState<RecorderStats | null>(null)
   const [secureOk] = useState(() => typeof window === 'undefined' || mediaEnvironmentOk())
+  const [recordingError, setRecordingError] = useState<string | null>(null)
   // A device failure needs to stay on screen: a toast disappears after a few seconds and the
   // instructions ("reset the permission") take longer than that to follow.
   const [deviceError, setDeviceError] = useState<string | null>(null)
@@ -470,6 +473,7 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
       return
     }
 
+    setRecordingError(null)
     const room = roomRef.current
     if (!room) {
       toast.error('请先连接音视频课堂，再开始录制')
@@ -478,17 +482,25 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
     if (!camera) {
       toast.warning('尚未开启摄像头，录像将只包含头像占位画面')
     }
-    const result = await api.media.startRecording(classId)
     try {
+      // Start the local encoder first. If the browser cannot create a recorder, no database row
+      // is created and the next click is not blocked by a phantom ACTIVE recording.
       const session = await startBrowserRecording(room)
-      setActiveRecording({ recordingId: result.recording.id, classId, session, startedAt: Date.now(), claimed: true })
-      setRecordingId(result.recording.id)
-      window.dispatchEvent(new Event('recordings-changed'))
-      toast.success('课堂录制已开始，录制期间请保持本页面打开')
+      try {
+        const result = await api.media.startRecording(classId)
+        setActiveRecording({ recordingId: result.recording.id, classId, session, startedAt: Date.now(), claimed: true })
+        setRecordingId(result.recording.id)
+        window.dispatchEvent(new Event('recordings-changed'))
+        toast.success('课堂录制已开始，录制期间请保持本页面打开')
+      } catch (error) {
+        await session.stop().catch(() => undefined)
+        throw error
+      }
     } catch (error) {
-      await api.media.stopRecording(result.recording.id).catch(() => undefined)
       window.dispatchEvent(new Event('recordings-changed'))
-      toast.error('无法开始录制：' + (error instanceof Error ? error.message : '未知错误'))
+      const message = error instanceof Error ? error.message : '未知错误'
+      setRecordingError(message)
+      toast.error('无法开始录制：' + message)
     }
   }
 
@@ -499,15 +511,15 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-3 text-slate-900">
       <div className="flex flex-wrap items-center gap-2">
-        <strong className="mr-auto text-sm">{tutoringId ? '私密一对一辅导' : '音视频课堂'}</strong>
+        <strong className="mr-auto text-sm">{tutoringId ? t('classroom.privateTutoring') : t('classroom.mediaClass')}</strong>
         {!connected ? (
-          <Button size="sm" onClick={connect} disabled={connecting}>{connecting ? '连接中…' : `连接${tutoringId ? '辅导' : '音视频'}`}</Button>
+          <Button size="sm" onClick={connect} disabled={connecting}>{connecting ? t('classroom.connecting') : tutoringId ? t('classroom.connectTutoring') : t('classroom.connectMedia')}</Button>
         ) : (
           <span className="text-sm font-medium text-emerald-700">已连接</span>
         )}
         {(isTeacher || Boolean(tutoringId)) && connected && (
           <>
-            <Button size="sm" variant={camera ? 'default' : 'outline'} onClick={toggleCamera}>{camera ? '关闭摄像头' : '开启摄像头'}</Button>
+            <Button size="sm" variant={camera ? 'default' : 'outline'} onClick={toggleCamera}>{camera ? t('classroom.cameraOff') : t('classroom.cameraOn')}</Button>
             <Button size="sm" variant={microphone ? 'default' : 'outline'} onClick={toggleMicrophone}>{microphone ? '静音' : '开启麦克风'}</Button>
             <Button size="sm" variant={sharing ? 'default' : 'outline'} onClick={toggleShare}>{sharing ? '停止共享' : '共享屏幕'}</Button>
           </>
@@ -515,8 +527,8 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
         {/* A recording must always be stoppable: it outlives this component, so hiding the
             button when the panel switches to a tutoring room used to strand it on ACTIVE. */}
         {isTeacher && (!tutoringId || Boolean(recordingId)) && (
-          <Button size="sm" variant={recordingId ? 'destructive' : 'outline'} onClick={toggleRecording} disabled={uploading}>
-            {uploading ? '保存中…' : recordingId ? '停止录制' : '开始录制'}
+          <Button data-testid="recording-toggle" size="sm" variant={recordingId ? 'destructive' : 'outline'} onClick={toggleRecording} disabled={uploading}>
+            {uploading ? t('classroom.saving') : recordingId ? t('classroom.stopRecording') : t('classroom.startRecording')}
           </Button>
         )}
       </div>
@@ -524,6 +536,12 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
       {!secureOk && (
         <p className="mt-2 rounded border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900">
           当前页面不是安全上下文，浏览器不会开放摄像头和麦克风。请改用 <code className="font-mono">http://localhost:3000</code> 访问（局域网 IP 或 http 域名都不行）。
+        </p>
+      )}
+
+      {recordingError && !recordingId && (
+        <p className="mt-2 rounded border border-rose-300 bg-rose-50 p-2 text-xs leading-relaxed text-rose-900">
+          <span className="font-semibold">录制没有启动：</span>{recordingError}。请确认已连接音视频课堂；如仍失败，请刷新页面后重试。
         </p>
       )}
 
@@ -553,7 +571,7 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
       )}
 
       <details className="mt-2 rounded border border-slate-200 bg-slate-50 p-2 text-xs text-slate-700">
-        <summary className="cursor-pointer font-medium">摄像头 / 麦克风打不开？点开看本机检测结果</summary>
+        <summary className="cursor-pointer font-medium">{t('classroom.diagnostics')}</summary>
         {diagnostics ? (
           <div className="mt-2 space-y-1">
             <p>访问地址：<code className="font-mono">{diagnostics.origin}</code>（{diagnostics.secure ? '安全上下文 ✓' : '不是安全上下文 ✗'}）</p>
@@ -580,7 +598,7 @@ export default function MediaRoomPanel({ classId, isTeacher, tutoringId }: { cla
       <div ref={previewRef} className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2" />
       {connected && previewCount === 0 && (
         <p className="mt-3 rounded border border-dashed border-slate-300 p-4 text-center text-xs text-slate-500">
-          还没有画面。点击「开启摄像头」开始推流，其他人加入后会自动出现在这里。
+          {t('classroom.noVideo')}
         </p>
       )}
     </section>

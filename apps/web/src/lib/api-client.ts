@@ -16,11 +16,12 @@ async function request<T>(url: string, options: RequestInit = {}, timeoutMs = DE
   const timeout = window.setTimeout(() => controller.abort(), timeoutMs)
   const abortFromCaller = () => controller.abort()
   options.signal?.addEventListener('abort', abortFromCaller, { once: true })
+  const isBinaryBody = typeof Blob !== 'undefined' && options.body instanceof Blob
 
   try {
     const res = await fetch(url, {
       ...options,
-      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+      headers: { ...(isBinaryBody ? {} : { 'Content-Type': 'application/json' }), ...(options.headers || {}) },
       signal: controller.signal,
     })
     const contentType = res.headers.get('content-type') || ''
@@ -189,7 +190,7 @@ export const api = {
   },
   user: {
     me: async () => {
-      const data = await request<{ user: { id: string; name: string; email: string; role: string; coins: number } }>('/api/user/me', { method: 'GET' })
+      const data = await request<{ user: { id: string; name: string; email: string; role: string; coins: number; avatarConfig?: unknown } }>('/api/user/me', { method: 'GET' })
       return data.user
     },
     updateAvatar: (avatarConfig: Record<string, unknown>) =>

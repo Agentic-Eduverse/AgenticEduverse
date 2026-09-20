@@ -8,7 +8,7 @@ import { api } from '@/lib/api-client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Loader } from '@/components/ui/loader'
 import JoinClassDialog from '@/components/student/JoinClassDialog'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
@@ -33,10 +33,15 @@ export default function StudentDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [coins, setCoins] = useState(0)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 
   useEffect(() => {
     loadClasses()
-    api.user.me().then((user) => setCoins(user.coins)).catch(() => undefined)
+    api.user.me().then((user) => {
+      setCoins(user.coins)
+      const config = user.avatarConfig as { customImageUrl?: unknown } | undefined
+      setAvatarUrl(typeof config?.customImageUrl === 'string' ? config.customImageUrl : null)
+    }).catch(() => undefined)
   }, [])
 
   const loadClasses = async () => {
@@ -58,9 +63,12 @@ export default function StudentDashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16 ring-4 ring-primary/20">
-            <AvatarFallback className="text-lg bg-gradient-to-br from-primary to-purple-500 text-white">
-              {userName.charAt(0).toUpperCase()}
-            </AvatarFallback>
+            {avatarUrl && <AvatarImage src={avatarUrl} alt={`${userName}的头像`} />}
+            {!avatarUrl && (
+              <AvatarFallback className="text-lg bg-gradient-to-br from-primary to-purple-500 text-white">
+                {userName.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            )}
           </Avatar>
           <div>
             <h1 className="text-3xl font-bold">

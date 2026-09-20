@@ -312,7 +312,12 @@ export async function startBrowserRecording(room: Room): Promise<RecorderSession
   const startedAt = Date.now()
 
   const spawnRecorder = (): MediaRecorder => {
-    const recorder = new MediaRecorder(outputStream, { mimeType, videoBitsPerSecond: VIDEO_BITS_PER_SECOND })
+    // Chromium can throw when an empty or generic mimeType is explicitly supplied even though
+    // the default encoder works. Only pass a type that the browser has positively reported as
+    // supported; otherwise let MediaRecorder choose its native WebM profile.
+    const options: MediaRecorderOptions = { videoBitsPerSecond: VIDEO_BITS_PER_SECOND }
+    if (mimeType && MediaRecorder.isTypeSupported(mimeType)) options.mimeType = mimeType
+    const recorder = new MediaRecorder(outputStream, options)
     recorder.addEventListener('dataavailable', (event) => {
       if (event.data && event.data.size > 0) chunks.push(event.data)
     })
@@ -376,7 +381,8 @@ export async function startBrowserRecording(room: Room): Promise<RecorderSession
       elapsedMs: Date.now() - startedAt,
     }),
     stop: async () => {
-      if (stopped) return new Blob(chunks, { type: mimeType })
+      const blobType = activeRecorder?.mimeType || mimeType || 'video/webm'
+      if (stopped) return new Blob(chunks, { type: blobType })
       stopped = true
       window.clearTimeout(watchdog)
       const recorder = activeRecorder
@@ -384,13 +390,20 @@ export async function startBrowserRecording(room: Room): Promise<RecorderSession
         await new Promise<void>((resolve) => {
           const done = () => resolve()
           recorder.addEventListener('stop', done, { once: true })
+          // Ask the encoder for its latest buffered cluster before stopping. Without this,
+          // recordings shorter than the 5-second timeslice can legitimately produce 0 bytes.
+          try {
+            recorder.requestData()
+          } catch {
+            // Some implementations reject requestData while transitioning; stop still flushes.
+          }
           recorder.stop()
           // Never hang the UI on a muxer that refuses to flush.
           window.setTimeout(done, 4_000)
         })
       }
       cleanup()
-      return new Blob(chunks, { type: mimeType })
+      return new Blob(chunks, { type: blobType })
     },
   }
 }

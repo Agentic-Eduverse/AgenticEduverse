@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { MessageCircle, Send, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ChatMessage, Participant } from '@eduverse/shared'
+import { useI18n } from '@/lib/i18n'
 
 interface ChatSidebarProps {
   messages: ChatMessage[]
@@ -17,10 +18,10 @@ interface ChatSidebarProps {
   onMobileClose?: () => void
 }
 
-function formatTime(ts?: Date | string | number): string {
+function formatTime(ts: Date | string | number | undefined, locale: string): string {
   if (!ts) return ''
   const d = new Date(ts)
-  return d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+  return d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
 }
 
 function getInitials(name: string): string {
@@ -35,6 +36,7 @@ export default function ChatSidebar({
   mobileOpen = false,
   onMobileClose,
 }: ChatSidebarProps) {
+  const { t, locale } = useI18n()
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -62,7 +64,7 @@ export default function ChatSidebar({
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200">
         <div className="flex items-center gap-2">
           <MessageCircle className="h-5 w-5 text-primary" />
-          <span className="font-semibold">课堂聊天</span>
+          <span className="font-semibold">{t('classroom.chatTitle')}</span>
         </div>
         {onMobileClose && (
           <Button variant="ghost" size="icon" onClick={onMobileClose} className="md:hidden">
@@ -78,7 +80,7 @@ export default function ChatSidebar({
       >
         {messages.length === 0 && (
           <div className="text-center text-sm text-slate-400 py-8">
-            暂无消息，发送第一条吧！
+            {t('classroom.noMessages')}
           </div>
         )}
 
@@ -119,7 +121,7 @@ export default function ChatSidebar({
               >
                 <div className="flex items-center gap-2 text-xs text-slate-500">
                   <span className="font-medium">{displayName}</span>
-                  <span>{formatTime(msg.timestamp)}</span>
+                  <span>{formatTime(msg.timestamp, locale)}</span>
                 </div>
                 <div
                   className={cn(
@@ -142,7 +144,7 @@ export default function ChatSidebar({
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="输入消息..."
+            placeholder={t('classroom.chatPlaceholder')}
             rows={2}
             className="flex-1 resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onKeyDown={(e) => {

@@ -14,11 +14,9 @@ import MediaPanel from './MediaPanel'
 import ClassFilesPanel from './ClassFilesPanel'
 import SharedWhiteboard from './SharedWhiteboard'
 import RecordingsPanel from './RecordingsPanel'
+import { useI18n, type Translate } from '@/lib/i18n'
 
-const VirtualClassroom = dynamic(
-  () => import('./VirtualClassroom'),
-  { ssr: false, loading: () => <div className="w-full aspect-[16/10] rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-center text-slate-400">加载虚拟教室...</div> }
-)
+const VirtualClassroom = dynamic(() => import('./VirtualClassroom'), { ssr: false })
 
 interface ClassroomLayoutProps {
   isTeacher: boolean
@@ -64,23 +62,25 @@ function TeacherToolbar({
   duration,
   isLive,
   onStartQuiz,
+  t,
 }: {
   className: string
   participants: Participant[]
   duration: number
   isLive: boolean
   onStartQuiz?: () => void
+  t: Translate
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-white border-b border-slate-200">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-xl font-bold text-slate-800">{className}</h1>
         <Badge variant={isLive ? 'default' : 'secondary'} className="gap-1">
-          {isLive ? '● 上课中' : '未开始'}
+          {isLive ? `● ${t('classroom.live')}` : t('classroom.notStarted')}
         </Badge>
         <Badge variant="outline" className="gap-1">
           <Users className="h-3 w-3" />
-          {participants.length} 人
+          {t('classroom.participantCount', { count: participants.length })}
         </Badge>
         <Badge variant="outline" className="gap-1">
           <Timer className="h-3 w-3" />
@@ -91,7 +91,7 @@ function TeacherToolbar({
         {onStartQuiz && (
           <Button onClick={onStartQuiz} className="gap-2">
             <Trophy className="h-4 w-4" />
-            发起测验
+            {t('classroom.startQuiz')}
           </Button>
         )}
       </div>
@@ -106,6 +106,7 @@ function StudentToolbar({
   isLive,
   onRaiseHand,
   handRaised,
+  t,
 }: {
   className: string
   participants: Participant[]
@@ -113,17 +114,18 @@ function StudentToolbar({
   isLive: boolean
   onRaiseHand?: () => void
   handRaised?: boolean
+  t: Translate
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-white border-b border-slate-200">
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-xl font-bold text-slate-800">{className}</h1>
         <Badge variant={isLive ? 'default' : 'secondary'} className="gap-1">
-          {isLive ? '● 上课中' : '未开始'}
+          {isLive ? `● ${t('classroom.live')}` : t('classroom.notStarted')}
         </Badge>
         <Badge variant="outline" className="gap-1">
           <Users className="h-3 w-3" />
-          {participants.length} 人
+          {t('classroom.participantCount', { count: participants.length })}
         </Badge>
         <Badge variant="outline" className="gap-1">
           <Timer className="h-3 w-3" />
@@ -138,7 +140,7 @@ function StudentToolbar({
             className={cn('gap-2', handRaised && 'bg-amber-500 hover:bg-amber-600')}
           >
             <Hand className="h-4 w-4" />
-            {handRaised ? '已举手' : '举手'}
+            {handRaised ? t('classroom.handRaised') : t('classroom.raiseHand')}
           </Button>
         )}
       </div>
@@ -171,6 +173,7 @@ export default function ClassroomLayout({
   classFilesVersion = 0,
   onClassFilesChanged,
 }: ClassroomLayoutProps) {
+  const { t } = useI18n()
   const [duration, setDuration] = useState(0)
   const [showChatMobile, setShowChatMobile] = useState(false)
   const [bottomBarExpanded, setBottomBarExpanded] = useState(true)
@@ -218,6 +221,7 @@ export default function ClassroomLayout({
           duration={duration}
           isLive={isLive}
           onStartQuiz={onStartQuiz}
+          t={t}
         />
       ) : (
         <StudentToolbar
@@ -227,6 +231,7 @@ export default function ClassroomLayout({
           isLive={isLive}
           onRaiseHand={handleRaiseHand}
           handRaised={handRaised}
+          t={t}
         />
       )}
 
@@ -271,7 +276,7 @@ export default function ClassroomLayout({
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="text-sm font-medium text-slate-600 flex items-center gap-2">
                         <BrainCircuit className="h-4 w-4 text-primary" />
-                        教师工具
+                        {t('classroom.teacherTools')}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <Button
@@ -280,7 +285,7 @@ export default function ClassroomLayout({
                           onClick={() => handleToggleHeatMap()}
                           className="gap-1"
                         >
-                          {localHeatMap ? '关闭热力图' : '显示热力图'}
+                          {localHeatMap ? t('classroom.hideHeatmap') : t('classroom.showHeatmap')}
                         </Button>
                         <Button
                           variant="outline"
@@ -289,7 +294,7 @@ export default function ClassroomLayout({
                           className="gap-1"
                         >
                           <Users className="h-3.5 w-3.5" />
-                          辅导队列 ({handRaisedStudents.length})
+                          {t('classroom.tutoringQueue', { count: handRaisedStudents.length })}
                         </Button>
                         <Button
                           variant="ghost"
@@ -325,7 +330,7 @@ export default function ClassroomLayout({
 
             <button
               onClick={() => setShowChatMobile(true)}
-              aria-label="打开课堂聊天"
+              aria-label={t('classroom.openChat')}
               className="md:hidden fixed bottom-4 right-4 z-30 h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center"
             >
               <MessageCircle className="h-5 w-5" />

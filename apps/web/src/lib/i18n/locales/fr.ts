@@ -1,4 +1,5 @@
 import type { Dictionary } from '../dictionary'
+import en from './en'
 
 const fr: Dictionary = {
   common: {
@@ -189,6 +190,7 @@ const fr: Dictionary = {
     unavailable:
       'Le service de traduction est indisponible pour le moment, réessayez plus tard.',
   },
+  classroom: en.classroom,
   teacherDash: {
     title: 'Mes classes',
     subtitle: 'Gérez votre classe et lancez une expérience d’enseignement immersive',

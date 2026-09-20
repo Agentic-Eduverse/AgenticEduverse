@@ -20,8 +20,11 @@ import type { Participant, QuizResponse } from '@eduverse/shared'
 import ParentInviteDialog from '@/components/teacher/ParentInviteDialog'
 import { api, type ClientClass } from '@/lib/api-client'
 import QuizManagerDialog from '@/components/teacher/QuizManagerDialog'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { useI18n } from '@/lib/i18n'
 
 export default function TeacherClassPage() {
+  const { t } = useI18n()
   const params = useParams()
   const classId = params?.id as string
   const { data: session } = useSession()
@@ -72,9 +75,9 @@ export default function TeacherClassPage() {
 
   const currentUser = useMemo<Participant>(() => ({
     userId: session?.user?.id || '',
-    name: session?.user?.name || '教师',
+    name: session?.user?.name || t('classroom.teacherFallback'),
     role: 'teacher',
-  }), [session])
+  }), [session, t])
 
   useEffect(() => {
     if (session?.user?.id) joinClassroom(classId, session.user.id)
@@ -122,21 +125,21 @@ export default function TeacherClassPage() {
 
   const startSelectedQuiz = async (quizId: string) => {
     const started = await startQuiz(quizId)
-    if (started) toast.success('已向全班发起测验')
+    if (started) toast.success(t('classroom.quizStarted'))
     return started
   }
 
   const handleEndQuiz = async () => {
-    if (await endQuiz()) toast.info('测验已结束')
-    else toast.error('结束测验失败，请重试')
+    if (await endQuiz()) toast.info(t('classroom.quizEnded'))
+    else toast.error(t('classroom.quizEndFailed'))
   }
 
   const handleEndClassroom = async () => {
     if (await endClassroom()) {
       setClassInfo((current) => current ? { ...current, isLive: false } : current)
-      toast.success('本节课堂已结束，出勤记录已结算')
+      toast.success(t('classroom.classEnded'))
     } else {
-      toast.error('结束课堂失败；如正在录制，请先停止并等待文件处理完成')
+      toast.error(t('classroom.classEndFailed'))
     }
   }
 
@@ -147,30 +150,30 @@ export default function TeacherClassPage() {
   const handleRemoveStudent = async (queueId: string) => {
     const qs = queueStudents.find((s) => s.id === queueId)
     if (!qs || !(await resolveHand(qs.participant.userId))) {
-      toast.error('更新举手队列失败，请重试')
+      toast.error(t('classroom.handUpdateFailed'))
       return
     }
     setHighlightedUserId(null)
-    toast.success('已处理该次举手')
+    toast.success(t('classroom.handHandled'))
   }
 
   const handleConnectStudent = async (queueId: string) => {
     const item = queueStudents.find((student) => student.id === queueId)
     if (!item || !(await startTutoring(item.participant.userId))) {
-      toast.error('开始私密辅导失败，请确认学生仍在线')
+      toast.error(t('classroom.tutoringStartFailed'))
       return
     }
     setHighlightedUserId(item.participant.userId)
-    toast.success('私密辅导会话已建立，可连接独立音视频房间')
+    toast.success(t('classroom.tutoringStarted'))
   }
 
   const handleDisconnectStudent = async () => {
     if (!(await endTutoring())) {
-      toast.error('结束私密辅导失败，请重试')
+      toast.error(t('classroom.tutoringEndFailed'))
       return
     }
     setHighlightedUserId(null)
-    toast.success('私密辅导已结束，双方已返回主课堂')
+    toast.success(t('classroom.tutoringEnded'))
   }
 
   return (
@@ -180,33 +183,34 @@ export default function TeacherClassPage() {
           <Button variant="ghost" size="sm" asChild className="h-9 px-2">
             <Link href="/teacher/dashboard">
               <ArrowLeft className="h-4 w-4 mr-1" />
-              返回
+              {t('classroom.back')}
             </Link>
           </Button>
           <div>
             <div className="text-sm font-semibold text-slate-800">
-              {classInfo?.name || '课堂'}
+              {classInfo?.name || t('classroom.classFallback')}
             </div>
-            <div className="text-xs text-slate-500">教师端</div>
+            <div className="text-xs text-slate-500">{t('classroom.teacherPortal')}</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <LanguageSwitcher />
           <Button variant="destructive" size="sm" onClick={handleEndClassroom} disabled={!classroomLive}>
-            <Square className="mr-1 h-3.5 w-3.5" />结束课堂
+            <Square className="mr-1 h-3.5 w-3.5" />{t('classroom.endClass')}
           </Button>
           <Button variant="outline" size="sm" onClick={() => setInviteOpen(true)}>
             <UserPlus className="mr-1 h-4 w-4" />
-            邀请家长
+            {t('classroom.inviteParent')}
           </Button>
           {connected ? (
             <Badge variant="success" className="gap-1">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              已连接
+              {t('classroom.connected')}
             </Badge>
           ) : (
             <Badge variant="warning" className="gap-1">
               <Loader size="sm" className="h-3 w-3" />
-              连接中
+              {t('classroom.connecting')}
             </Badge>
           )}
         </div>
@@ -221,7 +225,7 @@ export default function TeacherClassPage() {
           <ClassroomLayout
             isTeacher={true}
             classId={classId}
-            className={classInfo?.name || '互动课堂'}
+            className={classInfo?.name || t('classroom.interactiveClass')}
             currentUser={currentUser}
             participants={allParticipants}
             emotions={emotions}
@@ -259,7 +263,7 @@ export default function TeacherClassPage() {
           <aside className="hidden md:flex fixed right-0 top-14 bottom-0 w-96 border-l border-slate-200 bg-white overflow-y-auto z-20 p-4">
             <div className="w-full space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-slate-800">辅导管理</h2>
+                <h2 className="font-semibold text-slate-800">{t('classroom.tutoringManagement')}</h2>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -279,9 +283,9 @@ export default function TeacherClassPage() {
                 <div className="flex items-start gap-2 text-sm text-amber-800">
                   <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                   <div>
-                    <div className="font-medium">辅导提示</div>
+                    <div className="font-medium">{t('classroom.tutoringHint')}</div>
                     <div className="text-xs text-amber-700 mt-0.5">
-                      开始辅导后，教师与该学生会获得独立受限房间；主课堂录制不会录入辅导内容。
+                      {t('classroom.tutoringHintBody')}
                     </div>
                   </div>
                 </div>
@@ -311,14 +315,14 @@ export default function TeacherClassPage() {
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-slate-800">辅导管理</h2>
+                <h2 className="font-semibold text-slate-800">{t('classroom.tutoringManagement')}</h2>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowQueueDrawer(false)}
                   className="text-slate-500"
                 >
-                  关闭
+                  {t('classroom.close')}
                 </Button>
               </div>
               <PersonalClassQueue

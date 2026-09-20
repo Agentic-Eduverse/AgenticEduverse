@@ -1,4 +1,5 @@
 import type { Dictionary } from '../dictionary'
+import en from './en'
 
 const ja: Dictionary = {
   common: {
@@ -184,6 +185,7 @@ const ja: Dictionary = {
     parseFailed: '訳文を解析できませんでした。もう一度お試しください',
     unavailable: '翻訳サービスが一時的に利用できません。しばらくしてからお試しください。',
   },
+  classroom: en.classroom,
   teacherDash: {
     title: 'マイクラス',
     subtitle: '授業を管理し、没入型の指導体験を始めましょう',

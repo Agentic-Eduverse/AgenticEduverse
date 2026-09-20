@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n'
 
 interface FileItem { id: string; name: string; mimeType: string; size: number; createdAt: string }
 
@@ -23,6 +24,7 @@ export default function ClassFilesPanel({
   /** Lets the uploader announce the change so other participants refresh immediately. */
   onChanged?: () => Promise<boolean>
 }) {
+  const { t } = useI18n()
   const [files, setFiles] = useState<FileItem[]>([])
   const [uploading, setUploading] = useState(false)
   const [refreshing, setRefreshing] = useState(false)
@@ -92,11 +94,11 @@ export default function ClassFilesPanel({
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-3 text-slate-900">
       <div className="flex items-center justify-between gap-3">
-        <strong className="text-sm">课堂教材</strong>
+        <strong className="text-sm">{t('classroom.materials')}</strong>
         <div className="flex items-center gap-2">
           <Button size="sm" variant="ghost" disabled={refreshing} onClick={refresh}>
             <RefreshCw className={`mr-1 h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            刷新
+            {t('classroom.refresh')}
           </Button>
           {isTeacher && (
             <>
@@ -108,7 +110,7 @@ export default function ClassFilesPanel({
                 onChange={(event) => upload(event.target.files?.[0])}
               />
               <Button size="sm" variant="outline" disabled={uploading} onClick={() => inputRef.current?.click()}>
-                {uploading ? '上传中…' : '上传教材'}
+                {uploading ? t('classroom.uploading') : t('classroom.uploadMaterial')}
               </Button>
             </>
           )}
@@ -135,7 +137,7 @@ export default function ClassFilesPanel({
         ) : (
           !error && (
             <span className="text-xs text-slate-600">
-              {isTeacher ? '暂无教材，点「上传教材」添加' : '老师还没有上传教材'}
+              {isTeacher ? t('classroom.noMaterialsTeacher') : t('classroom.noMaterialsStudent')}
             </span>
           )
         )}

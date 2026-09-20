@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { WhiteboardEventData } from '@eduverse/shared'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/lib/i18n'
 
 type Point = { x: number; y: number }
 type Stroke = { points: Point[]; color: string; width: number }
 
 export default function SharedWhiteboard({ events, isTeacher, onAction }: { events: WhiteboardEventData[]; isTeacher: boolean; onAction: (action: 'stroke' | 'clear' | 'undo', payload: unknown) => Promise<boolean> }) {
+  const { t } = useI18n()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [drawing, setDrawing] = useState(false)
   const [draft, setDraft] = useState<Point[]>([])
@@ -69,5 +71,5 @@ export default function SharedWhiteboard({ events, isTeacher, onAction }: { even
     setDraft([])
   }
 
-  return <section className="rounded-lg border border-slate-200 bg-white p-3 text-slate-900"><div className="mb-2 flex items-center gap-2"><strong className="mr-auto text-sm">共享白板</strong>{isTeacher && <><input aria-label="画笔颜色" type="color" value={color} onChange={(event) => setColor(event.target.value)} /><Button size="sm" variant="outline" onClick={() => onAction('undo', {})}>撤销</Button><Button size="sm" variant="outline" className="text-red-700" onClick={() => onAction('clear', {})}>清空</Button></>}</div><canvas ref={canvasRef} className={`h-72 w-full rounded border border-slate-200 bg-white touch-none ${isTeacher ? 'cursor-crosshair' : 'cursor-default'}`} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} /></section>
+  return <section className="rounded-lg border border-slate-200 bg-white p-3 text-slate-900"><div className="mb-2 flex items-center gap-2"><strong className="mr-auto text-sm">{t('classroom.whiteboard')}</strong>{isTeacher && <><input aria-label={t('classroom.brushColor')} type="color" value={color} onChange={(event) => setColor(event.target.value)} /><Button size="sm" variant="outline" onClick={() => onAction('undo', {})}>{t('classroom.undo')}</Button><Button size="sm" variant="outline" className="text-red-700" onClick={() => onAction('clear', {})}>{t('classroom.clear')}</Button></>}</div><canvas ref={canvasRef} className={`h-72 w-full rounded border border-slate-200 bg-white touch-none ${isTeacher ? 'cursor-crosshair' : 'cursor-default'}`} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} /></section>
 }

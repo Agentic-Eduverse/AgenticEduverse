@@ -1,4 +1,5 @@
 import type { Dictionary } from '../dictionary'
+import en from './en'
 
 const ru: Dictionary = {
   common: {
@@ -188,6 +189,7 @@ const ru: Dictionary = {
     parseFailed: 'Не удалось разобрать перевод, попробуйте снова',
     unavailable: 'Сервис перевода сейчас недоступен, повторите попытку позже.',
   },
+  classroom: en.classroom,
   teacherDash: {
     title: 'Мои классы',
     subtitle: 'Управляйте своим классом и начните иммерсивное обучение',

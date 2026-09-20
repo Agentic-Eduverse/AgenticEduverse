@@ -3,10 +3,11 @@
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { BookOpen, GraduationCap, Users, UserCircle2, Crown } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { api } from '@/lib/api-client'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import { useI18n } from '@/lib/i18n'
 import type { UserRole } from '@eduverse/shared'
@@ -18,6 +19,28 @@ export default function Navbar() {
   const { data: session } = useSession()
   const role = (session?.user?.role as string | undefined)?.toUpperCase() as NormalizedRole | undefined
   const [menuOpen, setMenuOpen] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!session?.user || role !== 'STUDENT') {
+      setAvatarUrl(null)
+      return
+    }
+    const loadAvatar = () => {
+      void api.user.me().then((user) => {
+        const config = user.avatarConfig as { customImageUrl?: unknown } | undefined
+        setAvatarUrl(typeof config?.customImageUrl === 'string' ? config.customImageUrl : null)
+      }).catch(() => undefined)
+    }
+    loadAvatar()
+    const handleAvatarUpdated = (event: Event) => {
+      const config = (event as CustomEvent<unknown>).detail as { customImageUrl?: unknown } | undefined
+      if (typeof config?.customImageUrl === 'string') setAvatarUrl(config.customImageUrl)
+      else loadAvatar()
+    }
+    window.addEventListener('avatar-updated', handleAvatarUpdated)
+    return () => window.removeEventListener('avatar-updated', handleAvatarUpdated)
+  }, [role, session?.user])
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -93,9 +116,12 @@ export default function Navbar() {
                     className="flex items-center gap-2 rounded-full p-1 hover:bg-accent transition-colors"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback>
-                        {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
-                      </AvatarFallback>
+                      {avatarUrl && <AvatarImage src={avatarUrl} alt={`${session?.user?.name || '用户'}的头像`} />}
+                      {!avatarUrl && (
+                        <AvatarFallback>
+                          {session?.user?.name?.charAt(0).toUpperCase() || 'U'}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </button>
                   {menuOpen && (
